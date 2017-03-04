@@ -1,6 +1,13 @@
-import tnt
+from tnt.algorithms import ext
 import operator
 from collections import defaultdict
+
+'''
+sort API:
+sort(array):
+    non-mutated
+    return new array
+'''
 
 def swap_array_elms(a, i, j):
     a[i], a[j] = a[j], a[i]
@@ -30,46 +37,50 @@ def merge_sort(unsorted):
     a,b = merge_sort( unsorted[:n/2] ), merge_sort( unsorted[n/2:] )
     return merge(a,b)
 
-def quick_sort(a, start, end):
-    # http://www.algolist.net/Algorithms/Sorting/Quicksort
-    def select_pivot(s, e):
-        return s
+def quick_sort(a):
+    def _quick_sort(a, start, end):
+        # http://www.algolist.net/Algorithms/Sorting/Quicksort
+        def select_pivot(s, e):
+            return (s+e)/2
 
-    def partition(a, s, e):
-        ap = a[select_pivot(s, e)]
-        i, j = s, e
-        while i <= j:
-            while a[i] < ap:
-                i += 1
+        def partition(a, s, e):
+            ap = a[select_pivot(s, e)]
+            i, j = s, e
+            while i <= j:
+                while a[i] < ap:
+                    i += 1
 
-            while a[j] > ap:
-                j -= 1
-                
-            # print i, j, a[s:e]
+                while a[j] > ap:
+                    j -= 1
+                    
+                # print i, j, a[s:e]
 
-            if i <= j:
-                swap_array_elms(a, i, j)
-                i += 1
-                j -= 1
-            # print j, select_pivot(s, e), ap, a[s:e]
-        return i
+                if i <= j:
+                    swap_array_elms(a, i, j)
+                    i += 1
+                    j -= 1
+                # print j, select_pivot(s, e), ap, a[s:e]
+            return i
 
-    if start >= end:
-        return a 
-    pivot = partition(a, start, end)
-    if start < pivot-1:
-        quick_sort(a, start, pivot-1)
-    if pivot < end:
-        quick_sort(a, pivot, end)
-    return a
+        if start >= end:
+            return a 
+        pivot = partition(a, start, end)
+        if start < pivot-1:
+            _quick_sort(a, start, pivot-1)
+        if pivot < end:
+            _quick_sort(a, pivot, end)
+        return a
+
+    b = list(a)
+    return _quick_sort(b, 0, len(b)-1)
 
 
-def tnt_quick_sort(a):
+def c_quick_sort(a):
     # The same algorithm as quick_sort but implemented in C++
     if not isinstance(a, list):
         raise 'tnt_quick_sort supports lists of ints only'
 
-    return tnt.quick_sort(a)
+    return ext.quick_sort(a)
 
 class Heap:
     def __init__(self, compare):
@@ -114,8 +125,9 @@ class Heap:
 
 def heap_sort(unsorted):
     heap = Heap(operator.gt)
-    heap.sort(unsorted)
-    return unsorted
+    b = list(unsorted)
+    heap.sort(b)
+    return b
 
 def bubble_sort(unsorted):
     def do_1_pass(a):
@@ -125,9 +137,11 @@ def bubble_sort(unsorted):
                 a[i+1], a[i] = a[i], a[i+1]
                 swapped = True
         return swapped
-    while do_1_pass(unsorted):
+
+    b = list(unsorted)
+    while do_1_pass(b):
         pass
-    return unsorted
+    return b
 
 def insertion_sort(unsorted):
     def insert(a, i):
@@ -137,9 +151,10 @@ def insertion_sort(unsorted):
                 i -= 1
             else:
                 break
-    for i in xrange(1, len(unsorted)):
-        insert(unsorted, i)
-    return unsorted
+    b = list(unsorted)
+    for i in xrange(1, len(b)):
+        insert(b, i)
+    return b
 
 
 

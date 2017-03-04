@@ -39,7 +39,7 @@ PyObject * vectorToPyList(std::vector<int> & vec) {
 }
 
 int selectPivot(int s, int e) {
-	return s;
+	return (s + e) / 2;
 }
 
 void swapElements(std::vector<int> & a, int i, int j) {
@@ -102,6 +102,6 @@ static PyMethodDef Methods[] = {
 };
 
 PyMODINIT_FUNC
-inittnt(void) {
-	(void) Py_InitModule("tnt", Methods);
+initext(void) {
+	(void) Py_InitModule("tnt.algorithms.ext", Methods);
 }

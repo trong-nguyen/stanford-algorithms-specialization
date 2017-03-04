@@ -21,7 +21,7 @@ import argparse
 import sys
 import logging
 
-from algorithms import __version__
+from tnt.algorithms import __version__
 
 __author__ = "trong-nguyen"
 __copyright__ = "trong-nguyen"

@@ -4,6 +4,20 @@ Class: Algorithms Divide and Conquer
 Lecturer: Tim Roughgarden - Professor at Stanford University  
 Published: 2012  
 
+## Quick sort
+
+New presentation in Divide-And-Conquer fashion:
+- Divide: 
+	* Choose pivot
+	* Do swapping, ensure that at the end of the swapping, the selected pivot value will stay in its rightful place in the desired, sorted array. This is the new insight!
+	* Pivoting process means that we do re-arrangement around the pivot value, not the pivot index. Hence the value selected as pivot will actually be moved around during the process.
+- Conquer:
+	* Sort left
+	* Sort right
+- Combine: since the process is in-place, there is practically a stand-alone combination.
+
+**New insight: rigorous and mathematically proven technique** to choose pivot by Prof. Roughgarden: always choose the item in the first index as pivot value. The partition routine always assume that (pivot at the beginning of array) to do the partitioning. The tip here is before the partition process, swap WHATEVER value chosen as pivot TO the first index of the array (or sub-arrays). Randomization is introduced into pivot selection by simply guesing the median from [first, mid and last] trio items, which takes O(n).
+
 ## Karatsuba's algorithm for efficient number multiplication
 
 ![Images](http://img2016.itdadao.com/d/file/tech/2016/10/22/cd310514221520581.jpg)
@@ -25,11 +39,14 @@ Applications: [HackerRank challenge](https://www.hackerrank.com/challenges/new-y
 
 Brute-force: O(n<sup>2</sup>)
 
-Algorithm:
+Algorithm for O(nlogn):
+
+![](https://i.stack.imgur.com/kIci0.png)
+
 - Preprocessing: sort the data points in x to get Px, in y to get Py. Both contains the same data points, but in different orders.
 - Divide: partition to left and right data points
 	+ Take the index (n/2 where n is Px length) of the mid item in Px, get its x coordinate, name it x*, Px<sup>n+1</sup> will have the items from Px[0 ... n/2] on the left and Px[n/2+1 ... n] on the right
-	+ Filter Py by x_bar: iterating from bottom to top in Py, if items have x coordinate less than x_bar, put it in Py<sup>n+1</sup><sub>left</sub>, otherwise in the right bucket Py<sup>n+1</sup><sub>right</sub>. By iterating from bottom to top, we preserve the y-increasing order. This is crucial!
+	+ Filter Py by x_bar: iterating from bottom to top in Py, if items have x coordinate less than x*, put it in Py<sup>n+1</sup><sub>left</sub>, otherwise in the right bucket Py<sup>n+1</sup><sub>right</sub>. By iterating from bottom to top, we preserve the y-increasing order. This is crucial!
 	+ NOTE: Px<sup>n+1</sup> and Py<sup>n+1</sup> now MAY not contain the same data points (differ by the duplicated data points, in the event that duplicated data points (in x coordinate) occur. But the algorithm would, surprisingly, still WORK!
 	+ The stop-check must be placed in the conquer step should left or right bucket Py be empty.
 - Conquer: easy by recurrence.

@@ -18,6 +18,17 @@ New presentation in Divide-And-Conquer fashion:
 
 **New insight: rigorous and mathematically proven technique** to choose pivot by Prof. Roughgarden: always choose the item in the first index as pivot value. The partition routine always assume that (pivot at the beginning of array) to do the partitioning. The tip here is before the partition process, swap WHATEVER value chosen as pivot TO the first index of the array (or sub-arrays). Randomization is introduced into pivot selection by simply guesing the median from [first, mid and last] trio items, which takes O(n).
 
+**Another insight**: randomization is applied in this algorithm, however the randomness is not in the input data, but rather in the choice of pivot. AND amazingly, throughout the sorting process of one single input, numerous selections of pivot were made. Hence if averaged out, it pretty much centers around the median value, according to the law of large number, normal distribution. Which translates to the fact that more often than not the random choice of pivot is close to the median. Truly amazing and elegant in the way randomization comes into play here.
+
+## Select k-th smallest item in an array
+
+Complexity: O(n) with randomization.
+
+This algorithm is analogous to quicksort, in the way that it utilizes the partition process and only recurse on one of the sub-arrays, depending on the relation between the returned pivot index and **k**. It is efficient in the sense that given an array of arbitrary size, it takes only linear time to pick the k-th smallest or largest item in the array. Another application, it takes only O(n) to get the median value. 
+
+How is it possible? Think about the fact that it eliminates the boiler plate steps and only focuses on the k fraction of the recursed arrays. It does not care about statistic order in each of the sub-arrays. Its interest is simple and efficient: after each recursion, a large number of unnecessary data is thrown away in the left or right sub-arrays, depending on their size.
+
+
 ## Karatsuba's algorithm for efficient number multiplication
 
 ![Images](http://img2016.itdadao.com/d/file/tech/2016/10/22/cd310514221520581.jpg)

@@ -21,25 +21,29 @@ def select_median_as_pivot(start, end, array):
 	return sorted(items)[1][1] # mid point, index
 
 def select_median_of_medians(array):
-	def mid_index(array):
-		return (len(array) - 1) / 2
+	def _select(array):
+		def mid_index(array):
+			return (len(array) - 1) / 2
 
-	def mid_point(array):
-		mid = 2 if len(array) == 5 else mid_index(array) 
-		return sorted(array)[mid]
+		def mid_point(array):
+			mid = 2 if len(array) == 5 else mid_index(array) 
+			return sorted(array)[mid]
 
-	n = len(array)
-	if n < 5:
-		return mid_point(array)
-	# base case
+		n = len(array)
+		if n < 5:
+			return mid_point(array)
+		# base case
 
-	# recursion
-	sub = [mid_point(array[5*i:min(5*(i+1),n)]) for i in range(n/5)]
-	return select_median_of_medians(sub)
+		# recursion
+		sub = [mid_point(array[5*i:min(5*(i+1),n)]) for i in range(n/5)]
+		return _select(sub)
+
+	# create an array with original index
+	array = list(((v, i) for i, v in enumerate(array)))
+	return _select(array)[1] # get index
 
 def select_median_of_medians_as_pivot(start, end, array):
-	mid = select_median_of_medians(array[start:end])
-	return array.index(mid)
+	return start + select_median_of_medians(array[start:end])
 
 import random
 def select_random_as_pivot(start, end, array):
@@ -101,7 +105,7 @@ def comparisons_in_quick_sort(array, pivot_as):
 
 def test():
 	array = [7,2,17,12,13,8,20,4,6,3,19,1,9,5,16,10,15,18]
-	assert select_median_of_medians(array) == 9, 'Median of medians of array {} is not {}'.format(array, 9)
+	assert array[select_median_of_medians(array)] == 9, 'Median of medians of array {} is not {}'.format(array, 9)
 
 	array = [0, 3, 1, 2, 6, 9, 3]
 	assert select_median_as_pivot(0, len(array), array) == 3, select_median_as_pivot(0, len(array), array)

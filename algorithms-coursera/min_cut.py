@@ -1,4 +1,5 @@
 import random
+# from numpy.random import choice as numpy_choice
 def min_cut(graph):
 	edge_graph = make_edge_graph(graph)
 	vertex_graph = copy.deepcopy(graph)
@@ -32,11 +33,10 @@ class EdgeGraph(object):
 			explored[v1][v0] = True
 
 		explored = {}
-		edges = {} # to keep track of all edges
 		vertex_edges = {} # to keep track of which edges are associated with which vertex
 
 		for v0, vs in adjacencies.iteritems():
-			vertex_edges[v0] = vertex_edges.get(v0, [])
+			# vertex_edges[v0] = vertex_edges.get(v0, [])
 
 			# arrange connections in buckets
 			ds = {}
@@ -45,114 +45,66 @@ class EdgeGraph(object):
 
 			for vi, counts in ds.iteritems():
 				if not_explored(v0, vi, explored):
-					new_edges = [(v0, vi, iden) for iden in range(counts)]
-					new_edges_dict = {e: True for e in new_edges}
-
 					# VED
-					vertex_edges[vi] = vertex_edges.get(vi, [])
-					for v in (v0, vi):
-						vertex_edges[v] += new_edges_dict.keys()
-
-					# ED
-					edges.update(new_edges_dict)
+					vertex_edges[vi] = vertex_edges.get(vi, []) + [v0] * counts
+					vertex_edges[v0] = vertex_edges.get(v0, []) + [vi] * counts
 
 					mark_explored(v0, vi, explored)
 
-		self.edges = edges
 		self.vertex_edges = vertex_edges
+		self.edges = []
 
 	def pick_random_edge(self):
-		return random.choice(self.edges.keys())
+		#usable only with reused vertices after contraction
+		def shuffle(ve):
+			items = [(v0, v1) for v0, vs in ve.iteritems() for v1 in vs]
+			random.shuffle(items)
+			return items
 
-	def map_changes_from_contraction(self, edge):
-		# change name
-		# change all edges that contain either v0 and v1 to the new contracted node
-		def get_name_map(old, new, iden_edges):
-			"""Change any old node into new name"""
-			is_affected = lambda e: old in e[:2]
-			affected_edges = filter(is_affected, iden_edges)
-			def change(old, new, e):
-				v0 = [e[0], new][e[0] == old]
-				v1 = [e[1], new][e[1] == old]
-				return type(e)((v0, v1) + e[2:])
+		# correct only with reused vertices after contraction
+		# the idea is to pre-generate a random sample of all edges
+		# resupply if running out
+		while self.vertex_edges:
+			if not self.edges:
+				self.edges = shuffle(self.vertex_edges)
 
-			name_map = {k:change(old, new, k) for k in affected_edges}
-			return name_map
-
-		def renumber_identities(name_map):
-			nm = {}
-			iden = 0
-			for k, v in name_map.iteritems():
-				nm[k] = v[:2] + (iden,)
-				iden += 1
-			return nm
-
-		v0, v1 = edge[:2]
-		# new_vertex = '{},{}'.format(v0, v1) # the comma is super important, without commas collisons prevail
-		# new_vertex = v0
-		## exponential increase
-		# new_vertex = v0
-		# while new_vertex in self.vertex_edges:
-		# 	new_vertex = str((int(new_vertex)+1)*2)
-		# new_vertex = str(new_vertex)
-		# print 'v0={}, new_vertex={}'.format(v0, new_vertex)
-		# print self.vertex_edges.keys()
-
-		# random
-		RR = len(self.vertex_edges)*5
-		new_vertex = random.randrange(RR)
-		count = 1
-		while new_vertex in self.vertex_edges:
-			count += 1
-			new_vertex = random.randrange(RR)
-		# print '(v0, v1)={}, new {}, randomizing {} times'.format(edge, new_vertex, count)
+			edge = self.edges.pop()
+			v0, v1 = edge
+			if v0 in self.vertex_edges and v1 in self.vertex_edges:
+				return edge
 
 
-		name_map = {}
-		new_edges = {}
-		shorcut_edges = (edge[:2], edge[:2][::-1])
-		for old_vertex in (v0, v1):
-			name_map.update(get_name_map(old_vertex, new_vertex, self.vertex_edges[old_vertex]))
-			
+		# # for general use, regardless of new_node strategy
+		# items = [(v0, v1) for v0, vs in self.vertex_edges.iteritems() for v1 in vs]
+		# return random.choice(items)
 
-		name_map = renumber_identities(name_map)
-		contracted_edges = filter(lambda e: e[:2] in shorcut_edges, name_map.keys())
-		name_map = {old:new for old, new in name_map.iteritems() if old[:2] not in shorcut_edges}
-		# new node gets all connection of old nodes
-
-		new_edges = name_map.values()
-		return {new_vertex:new_edges}, name_map, contracted_edges
+	def new_node(self, v0, v1):
+		# return '{},{}'.format(v0, v1)
+		return v0
 
 	def contract(self, edge):
-		new_element, name_map, contracted_edges = self.map_changes_from_contraction(edge)
+		v0, v1 = edge
+		new_vertex = self.new_node(v0, v1)
+		v0_vertices = self.remap(v0, v1, new_vertex)
+		v1_vertices = self.remap(v1, v0, new_vertex)
 
-		affected_vertices = set([v for e in name_map for v in e[:2]]).difference(edge[:2])
+		del self.vertex_edges[v0]
+		del self.vertex_edges[v1]
+		self.vertex_edges[new_vertex] = v0_vertices + v1_vertices 
 
-		for v in affected_vertices:
-			ve = self.vertex_edges[v]
-			self.vertex_edges[v] = [name_map.get(k, k) for k in ve]
-
-		# Sanitizing
-		# this is the whole point of using vertex_edges, to track affected changes to edges and change it
-		# accordingly in the main self.edges
-		for old, new in name_map.iteritems():
-			# try:
-			# 	del self.edges[old]
-			# except KeyError:
-			# 	print '{} not in {}'.format(old, self.edges.keys())
-			# 	raise
-			del self.edges[old]
-			self.edges[new] = True
-
-		for edge in contracted_edges:
-			del self.edges[edge]
-
-		del self.vertex_edges[edge[0]]
-		del self.vertex_edges[edge[1]]
-		self.vertex_edges.update(new_element)
+	def remap(self, v0, v1, new_vertex):
+		vs = self.vertex_edges[v0]
+		vs = [vi for vi in vs if vi != v1]
+		for vi in set(vs):
+			self.vertex_edges[vi] = map(lambda x: new_vertex if x == v0 else x, self.vertex_edges[vi])
+		return vs
 
 	def size(self):
-		return len(self.edges)
+		return len(self.vertex_edges)
+
+	def connectivities(self):
+		ve = self.vertex_edges
+		return sum([len(x) for x in ve.values()])
 		
 
 def _min_cut(edge_graph):
@@ -203,11 +155,18 @@ def min_cut2(adjacencies):
 			size = graph.size()
 			edges = None # graph.edges.keys()
 
-			edge = graph.pick_random_edge()[:2]
+			try:
+				edge = graph.pick_random_edge()[:2]
+			except:
+				print 'error popping'
+				print 'VE', graph.vertex_edges
+				print 'E', graph.edges
+				raise
+
 			graph.contract(edge)
 
-			if graph.size() < 2:
-				return size, edges
+			if graph.size() <= 2:
+				return graph.connectivities() / 2, graph.vertex_edges
 
 	mc = (10e6, None)
 	n = len(adjacencies)
@@ -263,12 +222,12 @@ def test():
 	}
 
 	eg = EdgeGraph(copy.deepcopy(graph))
-	assert eg.edges == {(1, 2, 0): True, (1, 3, 0): True, (1, 3, 1): True, (2, 3, 0): True}
-	assert eg.vertex_edges == {1: {(1, 2, 0): True, (1, 3, 0): True, (1, 3, 1): True}, 2: {(1, 2, 0): True, (2, 3, 0): True}, 3: {(1, 3, 0): True, (1, 3, 1): True, (2, 3, 0): True}}
+	# assert eg.edges == {(1, 2, 0): True, (1, 3, 0): True, (1, 3, 1): True, (2, 3, 0): True}
+	assert eg.vertex_edges == {1: [2, 3, 3], 2: [1, 3], 3: [1, 1, 2]}, eg.vertex_edges
 
 	eg.contract((1,3))
-	assert eg.edges == {(1, 2, 0): True, (2, 1, 1): True}, eg.edges
-	assert eg.vertex_edges == {1: {(1, 2, 0): True, (2, 1, 1): True}, 2: {(1, 2, 0): True, (2, 1, 1): True}}, eg.vertex_edges
+	# assert eg.edges == {(1, 2, 0): True, (2, 1, 1): True}, eg.edges
+	# assert eg.vertex_edges == {1: {(1, 2, 0): True, (2, 1, 1): True}, 2: {(1, 2, 0): True, (2, 1, 1): True}}, eg.vertex_edges
 
 	min_cut2(graph)
 
@@ -306,6 +265,9 @@ def test_assignment():
 	adjacencies = read_adjacencies(input_file)
 	edge_graph = make_edge_graph(adjacencies)
 	min_cut(edge_graph)
+
+	graph = make_adjacency_graph(adjacencies)
+	min_cut2(graph)
 
 
 # test()

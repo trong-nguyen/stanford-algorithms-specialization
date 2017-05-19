@@ -64,26 +64,6 @@ class EdgeGraph(object):
 	def pick_random_edge(self):
 		return random.choice(self.edges.keys())
 
-	def remove_edge(self, edge):
-		def remove(edge, edge_dict):
-			def rm(v0, v1, ed):
-				'''remove all identified edges (v0, v1, [0 1 2 ...])'''
-				iden = 0
-				while (v0, v1, iden) in ed:
-					del ed[(v0, v1, iden)]
-					iden += 1
-
-			v0, v1 = edge
-			rm(v0, v1, edge_dict)
-			rm(v1, v0, edge_dict)
-
-		#	ED
-		remove(edge, self.edges)
-
-		# 	VED
-		remove(edge, self.vertex_edges[edge[0]])
-		remove(edge, self.vertex_edges[edge[1]])
-
 	def map_changes_from_contraction(self, edge):
 		# change name
 		# change all edges that contain either v0 and v1 to the new contracted node
@@ -99,78 +79,63 @@ class EdgeGraph(object):
 			name_map = {k:change(old, new, k) for k in affected_edges}
 			return name_map
 
-		def adjust_identities(name_map, check_lists):
-			""" Change identities of contracted vertices to avoid collisons """
-			def collided(item, lists):
-				return any([item in li for li in lists])
-
-			nm = copy.deepcopy(name_map)
-			for old_edge, new_edge in nm.iteritems():
-				while collided(new_edge, check_lists + [nm.values()]):
-					iden = new_edge[-1] + 1
-					new_edge = new_edge[:2] + (iden,)
-				nm[old_edge] = new_edge
+		def renumber_identities(name_map):
+			nm = {}
+			iden = 0
+			for k, v in name_map.iteritems():
+				nm[k] = v[:2] + (iden,)
+				iden += 1
 			return nm
 
 		v0, v1 = edge[:2]
 		# new_vertex = '{},{}'.format(v0, v1) # the comma is super important, without commas collisons prevail
-		new_vertex = v0
+		# new_vertex = v0
+		## exponential increase
+		# new_vertex = v0
+		# while new_vertex in self.vertex_edges:
+		# 	new_vertex = str((int(new_vertex)+1)*2)
+		# new_vertex = str(new_vertex)
+		# print 'v0={}, new_vertex={}'.format(v0, new_vertex)
+		# print self.vertex_edges.keys()
+
+		# random
+		RR = len(self.vertex_edges)*5
+		new_vertex = random.randrange(RR)
+		count = 1
+		while new_vertex in self.vertex_edges:
+			count += 1
+			new_vertex = random.randrange(RR)
+		# print '(v0, v1)={}, new {}, randomizing {} times'.format(edge, new_vertex, count)
+
 
 		name_map = {}
 		new_edges = {}
 		shorcut_edges = (edge[:2], edge[:2][::-1])
-		contracted_edges = set()
 		for old_vertex in (v0, v1):
-			nm = get_name_map(old_vertex, new_vertex, self.vertex_edges[old_vertex].keys())
-			# remove contracted edges - edge which comprised of v0 and v1
-			nm = adjust_identities(nm, [self.edges, name_map.values()])
-			contracted_edges = contracted_edges.union(filter(lambda e: e[:2] in shorcut_edges, nm.keys()))
-			nm = {old:new for old, new in nm.iteritems() if old[:2] not in shorcut_edges}
-			# if edge == ('32', '5'): print 'nm', nm
-			name_map.update(nm)
+			name_map.update(get_name_map(old_vertex, new_vertex, self.vertex_edges[old_vertex].keys()))
+			
 
-			# new node gets all connection of old nodes
-			# new_edges.update({v: True for v in nm.values()})
+		name_map = renumber_identities(name_map)
+		contracted_edges = filter(lambda e: e[:2] in shorcut_edges, name_map.keys())
+		name_map = {old:new for old, new in name_map.iteritems() if old[:2] not in shorcut_edges}
+		# new node gets all connection of old nodes
 
 		new_edges = {v:True for v in name_map.values()}
 		return {new_vertex:new_edges}, name_map, contracted_edges
 
 	def contract(self, edge):
-		# print 'Contracting edge', edge
-		# print self.edges.keys()
-		# print self.vertex_edges
-
-		# remove edges contain both v0 and v1
-		self.remove_edge(edge)
-
 		new_element, name_map, contracted_edges = self.map_changes_from_contraction(edge)
-		# nm = adjust_identities(name_map, self.edges)
-		# print 'old name_map', name_map
-		# print 'new name_map', nm
-		# name_map = nm
-
-		# if edge == ('14', '2'): print 'name_map', name_map
 
 		affected_vertices = set([v for e in name_map for v in e[:2]]).difference(edge[:2])
 
 		for v in affected_vertices:
-			try:
-				ve = self.vertex_edges[v]
-			except KeyError:
-				print 'while contracting edge [{}]'.format(edge)
-				print 'vertex [{}] not in ve {}'.format(v, self.vertex_edges.keys())
-				print 'name_map', name_map
-				print 'affected_vertices', affected_vertices
-				raise
+			ve = self.vertex_edges[v]
 			self.vertex_edges[v] = {name_map.get(k, k): True for k in ve}
 
 		# Sanitizing
 		# this is the whole point of using vertex_edges, to track affected changes to edges and change it
 		# accordingly in the main self.edges
 		for old, new in name_map.iteritems():
-			# if edge == ('14', '2'): print 'deleting', old
-			# if edge == ('14', '2'): print 'adding', new
-			# if edge == ('14', '2'): print 'Edges', self.edges.keys()
 			# try:
 			# 	del self.edges[old]
 			# except KeyError:
@@ -178,9 +143,7 @@ class EdgeGraph(object):
 			# 	raise
 			del self.edges[old]
 			self.edges[new] = True
-			# if edge == ('14', '2'): print 'Edges', self.edges.keys()
 
-		# print 'contracted', contracted_edges
 		for edge in contracted_edges:
 			del self.edges[edge]
 
@@ -212,8 +175,8 @@ def _min_cut(edge_graph):
 		edge_graph = new_edge_graph
 
 		# make name
-		# new_node = ','.join([vi, vj])
-		new_node = vi
+		new_node = ','.join([vi, vj])
+		# new_node = vi
 
 		# filter either vertices of the edge
 		edge_graph = [[new_node if v in (vi, vj) else v for v in edge] for edge in edge_graph]
@@ -225,7 +188,7 @@ def min_cut(edge_graph):
 	m = len(edge_graph)
 
 	mc = (m, None)
-	for i in range(m):
+	for i in range(10):
 		g = copy.deepcopy(edge_graph)
 		new_cut = _min_cut(g)
 		mc = min(mc, new_cut)
@@ -248,7 +211,7 @@ def min_cut2(adjacencies):
 
 	mc = (10e6, None)
 	n = len(adjacencies)
-	for i in range(n**2):
+	for i in range(10):
 		eg = EdgeGraph(copy.deepcopy(adjacencies))
 		new_cut = _min_cut2(eg)
 		mc = min(mc, new_cut)
@@ -304,8 +267,8 @@ def test():
 	assert eg.vertex_edges == {1: {(1, 2, 0): True, (1, 3, 0): True, (1, 3, 1): True}, 2: {(1, 2, 0): True, (2, 3, 0): True}, 3: {(1, 3, 0): True, (1, 3, 1): True, (2, 3, 0): True}}
 
 	eg.contract((1,3))
-	assert eg.edges == {(2, 1, 0): True, (1, 2, 0): True}
-	assert eg.vertex_edges == {2: {(2, 1, 0): True, (1, 2, 0): True}, 1: {(2, 1, 0): True, (1, 2, 0): True}}
+	assert eg.edges == {(1, 2, 0): True, (2, 1, 1): True}, eg.edges
+	assert eg.vertex_edges == {1: {(1, 2, 0): True, (2, 1, 1): True}, 2: {(1, 2, 0): True, (2, 1, 1): True}}, eg.vertex_edges
 
 	min_cut2(graph)
 
@@ -321,35 +284,22 @@ def test():
 
 
 def test_big():
-	input_file = 'tests/course1/assignment4MinCut/input_random_15_50.txt'
+	input_file = 'tests/course1/assignment4MinCut/input_random_39_200.txt'
 	output_file = input_file.replace('input', 'output')
 	adjacencies = read_adjacencies(input_file)
+	# adjacencies = [map(int, adj) for adj in adjacencies]
 
+	# dict implementation
 	graph = make_adjacency_graph(adjacencies)
-
-	# eg = EdgeGraph(graph)
-	# # print eg.edges
-	# eg.contract(('3','2'))
-	# print 'eg.edges', eg.edges.keys()
-	# print 'eg.vertex_edges', {k:v.keys() for k,v in eg.vertex_edges.iteritems()}
-
-	# print '\n'
-
-	# eg.contract(('32','5'))
-	# print 'eg.edges', eg.edges.keys()
-	# print 'eg.vertex_edges', {k:v.keys() for k,v in eg.vertex_edges.iteritems()}
-	# eg.contract(('325','4'))
-	# print 'eg.edges', eg.edges.keys()
-	# print 'eg.vertex_edges', {k:v.keys() for k,v in eg.vertex_edges.iteritems()}
-	# eg.contract(('325','4'))
-
 	cuts, _ = min_cut2(graph)
 
 
-	edge_graph = make_edge_graph(adjacencies)
-	cuts, _ = min_cut(edge_graph)
-	expected_cuts = int(open(output_file, 'r').read())
-	assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
+
+	# # naive implementation
+	# edge_graph = make_edge_graph(adjacencies)
+	# cuts, _ = min_cut(edge_graph)
+	# expected_cuts = int(open(output_file, 'r').read())
+	# assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
 
 def test_assignment():
 	input_file = 'kargerMinCut.txt'
@@ -357,6 +307,10 @@ def test_assignment():
 	edge_graph = make_edge_graph(adjacencies)
 	min_cut(edge_graph)
 
+
 # test()
 test_big()
 # test_assignment()
+
+# import cProfile
+# cProfile.run('test_big()')

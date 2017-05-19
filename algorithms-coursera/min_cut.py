@@ -36,7 +36,7 @@ class EdgeGraph(object):
 		vertex_edges = {} # to keep track of which edges are associated with which vertex
 
 		for v0, vs in adjacencies.iteritems():
-			vertex_edges[v0] = vertex_edges.get(v0, {})
+			vertex_edges[v0] = vertex_edges.get(v0, [])
 
 			# arrange connections in buckets
 			ds = {}
@@ -49,9 +49,9 @@ class EdgeGraph(object):
 					new_edges_dict = {e: True for e in new_edges}
 
 					# VED
-					vertex_edges[vi] = vertex_edges.get(vi, {})
+					vertex_edges[vi] = vertex_edges.get(vi, [])
 					for v in (v0, vi):
-						vertex_edges[v].update(new_edges_dict)
+						vertex_edges[v] += new_edges_dict.keys()
 
 					# ED
 					edges.update(new_edges_dict)
@@ -112,7 +112,7 @@ class EdgeGraph(object):
 		new_edges = {}
 		shorcut_edges = (edge[:2], edge[:2][::-1])
 		for old_vertex in (v0, v1):
-			name_map.update(get_name_map(old_vertex, new_vertex, self.vertex_edges[old_vertex].keys()))
+			name_map.update(get_name_map(old_vertex, new_vertex, self.vertex_edges[old_vertex]))
 			
 
 		name_map = renumber_identities(name_map)
@@ -120,7 +120,7 @@ class EdgeGraph(object):
 		name_map = {old:new for old, new in name_map.iteritems() if old[:2] not in shorcut_edges}
 		# new node gets all connection of old nodes
 
-		new_edges = {v:True for v in name_map.values()}
+		new_edges = name_map.values()
 		return {new_vertex:new_edges}, name_map, contracted_edges
 
 	def contract(self, edge):
@@ -130,7 +130,7 @@ class EdgeGraph(object):
 
 		for v in affected_vertices:
 			ve = self.vertex_edges[v]
-			self.vertex_edges[v] = {name_map.get(k, k): True for k in ve}
+			self.vertex_edges[v] = [name_map.get(k, k) for k in ve]
 
 		# Sanitizing
 		# this is the whole point of using vertex_edges, to track affected changes to edges and change it

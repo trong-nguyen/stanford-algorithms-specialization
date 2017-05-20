@@ -1,21 +1,5 @@
 import random
-# from numpy.random import choice as numpy_choice
-def min_cut(graph):
-	edge_graph = make_edge_graph(graph)
-	vertex_graph = copy.deepcopy(graph)
-	vertex_graph['A'] = {}
-	vertex_graph['B'] = {}
-	while len(vertex_graph) > 2:
-		vi, vj = edge_graph.pop(random.randrange(len(edge_graph)))
-		nb = vertex_graph[vi].keys() + vertex_graph[vj].keys()
-		nb = filter(lambda x: x not in (vi, vj), nb)
-		del vertex_graph[vi]
-		del vertex_graph[vj]
-		super_node = 'B' if 'B' in nb else 'A'
-		for nb in vertex_graph[vi]:
-			pass
-
-	return len(g), a, b
+import copy
 
 class EdgeGraph(object):
 	"""docstring for EdgeGraph"""
@@ -41,7 +25,6 @@ class EdgeGraph(object):
 
 			for vi, counts in ds.iteritems():
 				if not_explored(v0, vi, explored):
-					# VED
 					vertex_edges[vi] = vertex_edges.get(vi, []) + [(v0, counts)]
 					vertex_edges[v0] = vertex_edges.get(v0, []) + [(vi, counts)]
 
@@ -110,30 +93,28 @@ class EdgeGraph(object):
 		return sum([sum([c for _,c in x]) for x in ve.values()])
 		
 
-def _min_cut(edge_graph):
-	while True:
-		# choose random		vi, vj = edge_graph[random.randrange(len(edge_graph))]
-		new_edge_graph = filter(lambda e: e not in [[vi, vj], [vj, vi]], edge_graph)
-		stat = 'picking [{}] and [{}], edges {}'.format(vi, vj, len(edge_graph))
-		# print edge_graph
-		if len(new_edge_graph) < 2:
-			return len(edge_graph), edge_graph[0]
-
-		edge_graph = new_edge_graph
-
-		# make name
-		new_node = ','.join([vi, vj])
-		# new_node = vi
-
-		# filter either vertices of the edge
-		edge_graph = [[new_node if v in (vi, vj) else v for v in edge] for edge in edge_graph]
-
-import copy
 def min_cut(edge_graph):
+	def _min_cut(edge_graph):
+		while True:
+			# choose random
+			new_edge_graph = filter(lambda e: e not in [[vi, vj], [vj, vi]], edge_graph)
+			stat = 'picking [{}] and [{}], edges {}'.format(vi, vj, len(edge_graph))
+			if len(new_edge_graph) < 2:
+				return len(edge_graph), edge_graph[0]
+
+			edge_graph = new_edge_graph
+
+			# make name
+			new_node = ','.join([vi, vj])
+			# new_node = vi
+
+			# filter either vertices of the edge
+			edge_graph = [[new_node if v in (vi, vj) else v for v in edge] for edge in edge_graph]
+
 	m = len(edge_graph)
 
 	mc = (m, None)
-	for i in range(10):
+	for i in range(m):
 		g = copy.deepcopy(edge_graph)
 		new_cut = _min_cut(g)
 		mc = min(mc, new_cut)
@@ -141,12 +122,11 @@ def min_cut(edge_graph):
 	return mc
 
 def min_cut2(adjacencies):
-	def _min_cut2(graph):
+	def _min_cut(graph):
 		while True:
-			# print map(lambda e: e[:], graph.edges.keys())
-			# choose random]
+			# choose random
 			size = graph.size()
-			edges = None # graph.edges.keys()
+			edges = None
 
 			edge = graph.pick_random_edge()[:2]
 
@@ -157,11 +137,18 @@ def min_cut2(adjacencies):
 
 	mc = (10e6, None)
 	n = len(adjacencies)
-	for i in range(10):
+	count = 1
+	for i in range(n**2):
 		eg = EdgeGraph(copy.deepcopy(adjacencies))
-		new_cut = _min_cut2(eg)
+		new_cut = _min_cut(eg)
+
+		if new_cut[0] == mc[0]:
+			count += 1
+		if new_cut[0] < mc[0]:
+			count = 1 # reset
 		mc = min(mc, new_cut)
-		print 'Attemp No. {}:'.format(i), mc, new_cut
+
+		print 'Attemp No. {} (success {:.01f}%):'.format(i, 100.*count/(i+1)), mc, new_cut
 	return mc
 
 
@@ -178,7 +165,7 @@ def make_edge_graph(data):
 	for adj in data:
 		v0 = adj[0]
 		nodes = adj[1:]
-		# graph += [(adj[0], adj_i) for adj_i in nodes]
+		
 		for vi in nodes:
 			if not(v0 in explored and vi in explored[v0]):
 				graph.append((v0, vi))

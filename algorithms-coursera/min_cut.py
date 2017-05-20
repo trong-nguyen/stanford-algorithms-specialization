@@ -87,7 +87,7 @@ class EdgeGraph(object):
 		return sum([sum([c for _,c in x]) for x in ve.values()])
 		
 
-def min_cut2(adjacencies):
+def min_cut(adjacencies):
 	def _min_cut(graph):
 		while True:
 			# choose random
@@ -162,7 +162,7 @@ def test():
 	adjacencies = read_adjacencies(input_file)
 
 	graph = make_adjacency_graph(adjacencies)
-	cuts, _ = min_cut2(graph)
+	cuts, _ = min_cut(graph)
 	expected_cuts = int(open(output_file, 'r').read())
 	assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
 
@@ -174,7 +174,7 @@ def test_assignment():
 	# min_cut(edge_graph)
 
 	graph = make_adjacency_graph(adjacencies)
-	min_cut2(graph)
+	min_cut(graph)
 
 test()
 # test_assignment()

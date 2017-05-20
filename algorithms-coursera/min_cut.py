@@ -14,8 +14,6 @@ def min_cut(graph):
 		super_node = 'B' if 'B' in nb else 'A'
 		for nb in vertex_graph[vi]:
 			pass
-		# else
-
 
 	return len(g), a, b
 
@@ -36,8 +34,6 @@ class EdgeGraph(object):
 		vertex_edges = {} # to keep track of which edges are associated with which vertex
 
 		for v0, vs in adjacencies.iteritems():
-			# vertex_edges[v0] = vertex_edges.get(v0, [])
-
 			# arrange connections in buckets
 			ds = {}
 			for vi in vs:
@@ -115,21 +111,13 @@ class EdgeGraph(object):
 		
 
 def _min_cut(edge_graph):
-	# edge_graph = make_edge_graph(graph)
 	while True:
-		# choose random
-		# vi, vj = edge_graph.pop(random.randrange(len(edge_graph)))
-		vi, vj = edge_graph[random.randrange(len(edge_graph))]
+		# choose random		vi, vj = edge_graph[random.randrange(len(edge_graph))]
 		new_edge_graph = filter(lambda e: e not in [[vi, vj], [vj, vi]], edge_graph)
 		stat = 'picking [{}] and [{}], edges {}'.format(vi, vj, len(edge_graph))
 		# print edge_graph
 		if len(new_edge_graph) < 2:
-			# print len(edge_graph), edge_graph
-			# print 'stopped when', stat
 			return len(edge_graph), edge_graph[0]
-		else:
-			pass
-			# print stat
 
 		edge_graph = new_edge_graph
 
@@ -139,8 +127,6 @@ def _min_cut(edge_graph):
 
 		# filter either vertices of the edge
 		edge_graph = [[new_node if v in (vi, vj) else v for v in edge] for edge in edge_graph]
-		# remove self-loop
-		# edge_graph = filter(lambda e: e != [new_node, new_node], edge_graph)
 
 import copy
 def min_cut(edge_graph):
@@ -162,13 +148,7 @@ def min_cut2(adjacencies):
 			size = graph.size()
 			edges = None # graph.edges.keys()
 
-			try:
-				edge = graph.pick_random_edge()[:2]
-			except:
-				print 'error popping'
-				print 'VE', graph.vertex_edges
-				print 'E', graph.edges
-				raise
+			edge = graph.pick_random_edge()[:2]
 
 			graph.contract(edge)
 
@@ -270,8 +250,9 @@ def test_big():
 def test_assignment():
 	input_file = 'kargerMinCut.txt'
 	adjacencies = read_adjacencies(input_file)
-	edge_graph = make_edge_graph(adjacencies)
-	min_cut(edge_graph)
+	
+	# edge_graph = make_edge_graph(adjacencies)
+	# min_cut(edge_graph)
 
 	graph = make_adjacency_graph(adjacencies)
 	min_cut2(graph)

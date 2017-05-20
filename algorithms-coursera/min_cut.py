@@ -46,8 +46,8 @@ class EdgeGraph(object):
 			for vi, counts in ds.iteritems():
 				if not_explored(v0, vi, explored):
 					# VED
-					vertex_edges[vi] = vertex_edges.get(vi, []) + [v0] * counts
-					vertex_edges[v0] = vertex_edges.get(v0, []) + [vi] * counts
+					vertex_edges[vi] = vertex_edges.get(vi, []) + [(v0, counts)]
+					vertex_edges[v0] = vertex_edges.get(v0, []) + [(vi, counts)]
 
 					mark_explored(v0, vi, explored)
 
@@ -57,7 +57,7 @@ class EdgeGraph(object):
 	def pick_random_edge(self):
 		#usable only with reused vertices after contraction
 		def shuffle(ve):
-			items = [(v0, v1) for v0, vs in ve.iteritems() for v1 in vs]
+			items = [(v0, v1) for v0, tp in ve.iteritems() for v1, count in tp for i in range(count)]
 			random.shuffle(items)
 			return items
 
@@ -90,13 +90,20 @@ class EdgeGraph(object):
 
 		del self.vertex_edges[v0]
 		del self.vertex_edges[v1]
-		self.vertex_edges[new_vertex] = v0_vertices + v1_vertices 
+		self.vertex_edges[new_vertex] = self.shorten(v0_vertices + v1_vertices)
+
+	def shorten(self, tuples):
+		d = {}
+		for k, count in tuples:
+			d[k] = d.get(k, 0) + count
+		return [(k,v) for k,v in d.iteritems()]
 
 	def remap(self, v0, v1, new_vertex):
 		vs = self.vertex_edges[v0]
-		vs = [vi for vi in vs if vi != v1]
-		for vi in set(vs):
-			self.vertex_edges[vi] = map(lambda x: new_vertex if x == v0 else x, self.vertex_edges[vi])
+		vs = [vi for vi in vs if vi[0] != v1]
+		for vi, count in vs:
+			tp = map(lambda x: (new_vertex, x[1]) if x[0] == v0 else x, self.vertex_edges[vi])
+			self.vertex_edges[vi] = self.shorten(tp)
 		return vs
 
 	def size(self):
@@ -104,7 +111,7 @@ class EdgeGraph(object):
 
 	def connectivities(self):
 		ve = self.vertex_edges
-		return sum([len(x) for x in ve.values()])
+		return sum([sum([c for _,c in x]) for x in ve.values()])
 		
 
 def _min_cut(edge_graph):

@@ -34,7 +34,6 @@ class EdgeGraph(object):
 		self.edges = []
 
 	def pick_random_edge(self):
-		#usable only with reused vertices after contraction
 		def shuffle(ve):
 			items = [(v0, v1) for v0, tp in ve.iteritems() for v1, count in tp for i in range(count)]
 			random.shuffle(items)
@@ -51,11 +50,6 @@ class EdgeGraph(object):
 			v0, v1 = edge
 			if v0 in self.vertex_edges and v1 in self.vertex_edges:
 				return edge
-
-
-		# # for general use, regardless of new_node strategy
-		# items = [(v0, v1) for v0, vs in self.vertex_edges.iteritems() for v1 in vs]
-		# return random.choice(items)
 
 	def new_node(self, v0, v1):
 		# return '{},{}'.format(v0, v1)
@@ -88,38 +82,10 @@ class EdgeGraph(object):
 	def size(self):
 		return len(self.vertex_edges)
 
-	def connectivities(self):
+	def get_connectivities(self):
 		ve = self.vertex_edges
 		return sum([sum([c for _,c in x]) for x in ve.values()])
 		
-
-def min_cut(edge_graph):
-	def _min_cut(edge_graph):
-		while True:
-			# choose random
-			new_edge_graph = filter(lambda e: e not in [[vi, vj], [vj, vi]], edge_graph)
-			stat = 'picking [{}] and [{}], edges {}'.format(vi, vj, len(edge_graph))
-			if len(new_edge_graph) < 2:
-				return len(edge_graph), edge_graph[0]
-
-			edge_graph = new_edge_graph
-
-			# make name
-			new_node = ','.join([vi, vj])
-			# new_node = vi
-
-			# filter either vertices of the edge
-			edge_graph = [[new_node if v in (vi, vj) else v for v in edge] for edge in edge_graph]
-
-	m = len(edge_graph)
-
-	mc = (m, None)
-	for i in range(m):
-		g = copy.deepcopy(edge_graph)
-		new_cut = _min_cut(g)
-		mc = min(mc, new_cut)
-		print 'Attemp No. {}:'.format(i), mc, new_cut
-	return mc
 
 def min_cut2(adjacencies):
 	def _min_cut(graph):
@@ -128,17 +94,18 @@ def min_cut2(adjacencies):
 			size = graph.size()
 			edges = None
 
-			edge = graph.pick_random_edge()[:2]
+			edge = graph.pick_random_edge()
 
 			graph.contract(edge)
 
 			if graph.size() <= 2:
-				return graph.connectivities() / 2, graph.vertex_edges
+				return graph.get_connectivities() / 2, graph.vertex_edges
 
 	mc = (10e6, None)
 	n = len(adjacencies)
 	count = 1
-	for i in range(n):
+	# empirical choice based on previous success ratio (2%) of total runs regardless of m and n
+	for i in range(500):
 		eg = EdgeGraph(copy.deepcopy(adjacencies))
 		new_cut = _min_cut(eg)
 
@@ -188,54 +155,16 @@ def make_vertex_graph(data):
 
 	return graph
 
+
 def test():
-	graph = {
-		1: [3, 2, 3],
-		2: [1, 3],
-		3: [1, 2, 1]
-	}
-
-	eg = EdgeGraph(copy.deepcopy(graph))
-	# assert eg.edges == {(1, 2, 0): True, (1, 3, 0): True, (1, 3, 1): True, (2, 3, 0): True}
-	assert eg.vertex_edges == {1: [2, 3, 3], 2: [1, 3], 3: [1, 1, 2]}, eg.vertex_edges
-
-	eg.contract((1,3))
-	# assert eg.edges == {(1, 2, 0): True, (2, 1, 1): True}, eg.edges
-	# assert eg.vertex_edges == {1: {(1, 2, 0): True, (2, 1, 1): True}, 2: {(1, 2, 0): True, (2, 1, 1): True}}, eg.vertex_edges
-
-	min_cut2(graph)
-
-
-	edge_graph = [
-		('1', '2'),
-		('1', '3'),
-		('2', '3'),
-		('2', '4'),
-		('3', '4'),
-	]
-	print 'Min cut for {} is {}'.format(edge_graph, min_cut(edge_graph))
-
-
-def test_big():
 	input_file = 'tests/course1/assignment4MinCut/input_random_39_200.txt'
 	output_file = input_file.replace('input', 'output')
 	adjacencies = read_adjacencies(input_file)
-	# adjacencies = [map(int, adj) for adj in adjacencies]
 
-	# dict implementation
 	graph = make_adjacency_graph(adjacencies)
 	cuts, _ = min_cut2(graph)
 	expected_cuts = int(open(output_file, 'r').read())
 	assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
-
-
-
-
-	# # naive implementation
-	# edge_graph = make_edge_graph(adjacencies)
-	# cuts, _ = min_cut(edge_graph)
-	# expected_cuts = int(open(output_file, 'r').read())
-	# assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
 
 def test_assignment():
 	input_file = 'kargerMinCut.txt'
@@ -247,10 +176,5 @@ def test_assignment():
 	graph = make_adjacency_graph(adjacencies)
 	min_cut2(graph)
 
-
-# test()
-test_big()
+test()
 # test_assignment()
-
-# import cProfile
-# cProfile.run('test_big()')

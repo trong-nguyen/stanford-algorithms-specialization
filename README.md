@@ -57,3 +57,4 @@ On mastering the following tools, I am pretty much preapared for my endevour:
 - [Python](https://python.org) for scripting, building, sketching, prototyping, i.e. lightly weighing - heavily *abstrative* computing tasks. Applications: Data Analytics, Machine Learning, Services, Backend systems
 - [C/C++](https://en.wikipedia.org/wiki/C%2B%2B) for *performance*, under-the-hood engine that powers abstractive calculation. Application: Physics modelling, CFD, time-critical algorithms, extensions for Python functionalities.
 - [JavaScript](https://www.javascript.com), currently ES5, for any *front end*, web app related. Great for building tools to allow platform independent, web based user interface. Applications: Data visulizations for algorithms and simulations, learning techniques.
+- [Pycallgraph](http://pycallgraph.slowchop.com/en/master/) is pretty cool for analyzing and optimizing Python codes, visually. A great addition to cProfile.

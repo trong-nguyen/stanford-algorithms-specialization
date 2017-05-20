@@ -19,7 +19,7 @@ The brute-force approach takes O(2<sup>n</sup>) by taking all possible combinati
 
 In practice, the smallest cut can be obtained much earlier than the theoretical number n<sup>2</sup>logn. Probably due to the distribution of the result itself: if we run large enough number of iterations, good cut or even best cut can be encountered throughout the process, probably in the beginning. And we only need it once. Note that there is a relation between number of runs and expected success ratio: there is always a probability, though low, to find the smallest cut in the initial runs. The catch is: we may not be aware that is the smallest cut, how can we anyway. 
 
-**In some simulations (running and count success cases so far, testing with graph size of 200 nodes), I consistently found that the success ratio is around 2%, having smallest cut in only a few hundred repetitions. Cool! Randomization to the rescue, friends!**
+**In some simulations (running and count success cases so far, testing with graph size of 200 nodes and 50 nodes), I consistently found that the success ratio is around 2%, having smallest cut in only a few hundred repetitions. Cool! Randomization to the rescue, friends!**
 
 Algorithm:
 - Repeatedly run (n<sup>2</sup>logn) times contraction algorithm on the original graph

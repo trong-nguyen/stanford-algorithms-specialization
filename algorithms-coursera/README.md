@@ -4,6 +4,35 @@ Class: Algorithms Divide and Conquer
 Lecturer: Tim Roughgarden - Professor at Stanford University  
 Published: 2012  
 
+## Karger's min-cut algorithm
+Reference: [here](https://en.wikipedia.org/wiki/Karger%27s_algorithm)
+
+Code: [here](min_cut.py)
+
+Complexity: O(m) for the contraction algorithm, O(n<sup>2</sup>mlogn) for running Karger's min-cut to guarantee an acceptable failure ratio (1/n).
+
+Problem: find the minimum cut of a graph that divides it into 2 non-empty sets. The value of a cut is determined by the edges that connect the 2 partitioned sets.
+
+This algorithm really raises the role of randomization in algorithm design. The rationale is when you seem not able to find an efficient solution (in polynomial time), you chance it by randomly select the solution. By random, it means with a tactic that employs randomization, certainly.
+
+The brute-force approach takes O(2<sup>n</sup>) by taking all possible combinations of any 2 sets. The Karger's algorithm suggests a better success probability of 1/n<sup>2</sup> by probability analysis, which translates into an O(n<sup>2</sup>mlogn) complexity in time algorithm by running the contraction algorithm n<sup>2</sup>logn times, each has complexity of O(m) (best known possible solution, others include O(mlogm) and O(n<sup>2</sup>)).
+
+In practice, the smallest cut can be obtained much earlier than the theoretical number n<sup>2</sup>logn. Probably due to the distribution of the result itself: if we run large enough number of iterations, good cut or even best cut can be encountered throughout the process, probably in the beginning. And we only need it once. Note that there is a relation between number of runs and expected success ratio: there is always a probability, though low, to find the smallest cut in the initial runs. The catch is: we may not be aware that is the smallest cut, how can we anyway. 
+
+**In some simulations (running and count success cases so far, testing with graph size of 200 nodes), I consistently found that the success ratio is around 2%, having smallest cut in only a few hundred repetitions. Cool! Randomization to the rescue, friends!**
+
+Algorithm:
+- Repeatedly run (n<sup>2</sup>logn) times contraction algorithm on the original graph
+	- Randomly select an edge of all the available edges
+	- Contract or collapse the 2 vertices of the selected edge:
+		+ Create a new node representing the contracted vertices
+		+ Transfer all the external (connecting to a third node) connections of the old nodes to the new nodes
+		+ Remove all internal or self-loop (connecting the two contracted nodes) edges of the old nodes.
+	- Stop when there are 2 vertices remained.
+	- The cut value is obtained by counting the remained edges in the graph.
+- Keep track of the smallest cut obtained so far
+
+
 ## Quick sort
 
 New presentation in Divide-And-Conquer fashion:

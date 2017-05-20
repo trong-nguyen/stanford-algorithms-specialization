@@ -138,7 +138,7 @@ def min_cut2(adjacencies):
 	mc = (10e6, None)
 	n = len(adjacencies)
 	count = 1
-	for i in range(n**2):
+	for i in range(n):
 		eg = EdgeGraph(copy.deepcopy(adjacencies))
 		new_cut = _min_cut(eg)
 
@@ -225,6 +225,9 @@ def test_big():
 	# dict implementation
 	graph = make_adjacency_graph(adjacencies)
 	cuts, _ = min_cut2(graph)
+	expected_cuts = int(open(output_file, 'r').read())
+	assert cuts == expected_cuts, 'RCut {}, expected {}'.format(cuts, expected_cuts)
+
 
 
 

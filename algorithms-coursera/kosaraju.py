@@ -34,7 +34,7 @@ def dfs(g, i, explored):
 	while stack:
 		i = stack[-1]
 		dead_end = True
-		if i in g: # directed graph does not guarantee every node exists in graph
+		if i in g: # directed graph does not guarantee every node exists in adjacency list labels (i.e. natural dead-end nodes).
 			for j in g[i]:
 				if j not in explored:
 					# print '..adding {} to stack {}, {}'.format(j, stack, explored)

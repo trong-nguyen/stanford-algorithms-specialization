@@ -4,6 +4,42 @@ Class: Algorithms Divide and Conquer
 Lecturer: Tim Roughgarden - Professor at Stanford University  
 Published: 2012  
 
+## Topological Sorting
+
+Complexity: O(m+n)  
+Dependency: Depth-First-Search  
+Terms to note: DAG - Directed acyclic (mean no cycles) graph  
+
+Algorithm:
+- By recursion: Kahn's method. It relies on a not-so-straightforward "Find nodes that have no incoming edges" utility and recurses on the subgraph of the original graph with the said no-incoming nodes removed.
+
+![](http://2.bp.blogspot.com/-uuJn6FwwFAQ/U_njMhKdZ9I/AAAAAAAANmc/L07MfjJFkRA/s1600/TopologicalSort.png)
+
+- By DFS: do DFS on all unexplored nodes, mark nodes that visited as explored. When encountering dead end nodes, i.e. nodes that have no outgoing edges which are unexplored or not existed, put it to the beginning of the sorted list. The algorithm terminates when all nodes are explored and sorted. Its methodology is kind of traversing to the end of the path, put the end node to sorted list and roll back to the preceeding node, check whether it is dead end, put it to the sorted list or if it branches to another path, following that path to the end and put it to the list. In the process of putting nodes to sorted list, we mark them as explored and treat any edge lead to them as dead end.
+
+![](http://www.crazyforcode.com/wp-content/uploads/2016/04/DFS.png)
+
+Application:
+- Sort software packages by their dependencies during installation
+
+## Kosaraju's Strongly Connected Components Detection
+
+SCC: strongly connected component, a set of nodes in which we can travel from any node to any other node.  
+Complexity: O(m+n)  
+Dependency: Depth-First-Search  
+
+Applications:
+- Analyze network weaknesses or structure
+- Analyze social networks, discover groups that are more closely connected (family, college alumni, coworkers, etc.)
+- Analyze physical networks, discover regions that are more likely to be isolated in case of emergency.
+
+Algorithm: [code here](kosaraju.py)
+- Reverse the direction of all edges, call the new graph G<sup>rev</sup>
+- Do first-pass DFS on G<sup>rev</sup>, similar to topological sorting. The purpose is to find an oder where nodes are moving upstream if followed. Prof. Tim calls it finishing time, i.e. which nodes finished first during the DFS.
+- Use the just found upstream order and do a second DFS **by this order (lowest finishing time value first in G<sup>rev</sup> or upmost / most forward nodes first in G) on the original, unreversed graph G**, i.e. doing DFS from the most upstream nodes down to the most downstream. On respecting this order, the DFS-s are restricted terminated to any strongly-connected component (mean cycle) in the **upstream only** without the risk of wandering into downstream components. Everytime the DFS stops, an SCC is revealed. After that we restart the DFS on the unexplored, lowest finishing time node. The strongly connected components should be gradually discovered sequentially from the upstream down.
+
+![](https://raw.githubusercontent.com/mebusy/notes/master/imgs/Kosaraju_example.PNG)
+
 ## Karger's min-cut algorithm
 Reference: [here](https://en.wikipedia.org/wiki/Karger%27s_algorithm)
 

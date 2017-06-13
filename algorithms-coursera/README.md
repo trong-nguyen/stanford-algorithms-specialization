@@ -1,8 +1,29 @@
-# Algorithms Divide and Conquer - Coursera
+# Algorithms Specialization - Coursera
 School: Coursera  
 Class: Algorithms Divide and Conquer  
 Lecturer: Tim Roughgarden - Professor at Stanford University  
 Published: 2012  
+
+# Algorithm Design Analysis
+Algorithms use one or more of the following methods:
+- Divide and conquer  
+Sorting algorithms (merge, quick)
+- Randomized algorithms  
+Quick sort
+- Dynamic programming  
+Fractional knapsack problem
+- Greedy method: relies on the local **optimal subtructure** property of the problem.  
+Dijkstras's method, activity selection, 0-1 (binary) Knapsack problem
+
+### Dynamic programming vs Greedy method:
+Algorithms that use greedy method differ from those using dynamic programming in the following ways:
+- In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
+- Dynamic programming uses bottom-up approach, greedy method uses top-down.
+
+## Minimum Spanning Tree (MST) - Prim's Algorithm
+Complexity: O(mlogn) using heap
+
+Algorithm: proceeding similar to Dijkstra's algorithm.
 
 ## Topological Sorting
 
@@ -152,6 +173,35 @@ So far so good, right? We still have to check the closest pair with one point in
 7. We aim to get the closestSplitPair in linear time, and I think this is the key to answer your question. How many points will we have at S? We don't know. In fact S could have as many points as P! To solve it in linear time we cannot afford to compare each possible pair. This would take O(n2) time. What can we do? We can compare each point of S only with other points with an y coordinate difference of at most δ. But to do so we need S sorted by y coordinate. We could filter Px based in point 6 limitations and sort S by y coordinate, but this would take O(nlog(n)) time, not linear. However, there is a trick we can do to have the points in S sorted by y coordinate in linear time. And this is the main reason we created Px and Py in the first place. We can just run through Py and if the current point satisfies the limitations of point 6, we store that point in S. This way we get the points sorted by y coordinate in linear time!
 
 8. Even this way, we cannot assure that there will be several points in S that falls in the same y,y+δ range. Or can we? In fact, we can. Given that δ was the closest pair of points in the same side of x¯, we are sure that there will be no points at the same half closer than δ. Therefore if we draw the know δ∗2δ rectangle, we can easily prove that at most we will have 8 points inside the rectangle. Therefore we will only need to compare each point in S with the next 7 points ordered by y coordinate. In fact we can prove that there will be needed just 5 comparisons, although the prove is not as easy. Feel free to investigate about that.
+
+## GCD and LCM, a.k.a Greatest Common Divisor and Least Common Multiplier
+
+At last, I collected the technique to find common divisors and multipliers. It is an addition to my algorithm toolbox , a very simple, fundamental yet very elegant and satisfactory. It draws a fine and definite line between a computer scientist and a monkey coder, or ones with algorithm understanding and those without.
+
+The GCD and LCM relates by this formula: lcm(a, b) = a x b / gcd(a, b)
+
+The gcd can be found using different techniques, namely prime factorization, binary factorization. I chose Euclidean thanks to its simplicity. Asymtotically it does not differ a lot from the most efficient methods.
+
+Look at this simple algorithm!  
+Complexity: O(logn) on average, O(h) in worst-case scenarios where h is the number of digits in the smaller number. Further [here](https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm).
+```javascript
+gcd(a, b):
+	if a === b:
+		return a
+	else if a > b:
+		return gcd(a-b, b)
+	else:
+		return gcd(b-a, a)
+
+lcm(a, b):
+	return a / gcd(a, b) * b // doing the division before multiplying by b (assuming a is larger) can be beneficial to memory storage
+```
+Recursively replacing the larger number with the difference. An improvement can be made by using the remainder in lieu of the difference.
+
+Advanced and further readings: 
+- [Euclidean Method](https://en.wikipedia.org/wiki/Euclidean_algorithm)
+- [Binary GCD Algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm)
+- [Prime Factorization](https://en.wikipedia.org/wiki/Integer_factorization)
 
 ## Resources:
 

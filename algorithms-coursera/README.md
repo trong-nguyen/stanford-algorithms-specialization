@@ -23,7 +23,13 @@ Algorithms that use greedy method differ from those using dynamic programming in
 ## Minimum Spanning Tree (MST) - Prim's Algorithm
 Complexity: O(mlogn) using heap
 
-Algorithm: proceeding similar to Dijkstra's algorithm.
+Foundation on:
+- Prim's algorithm guarantees to output a spanning tree (not neccessarily minimum): this in turn relies on:
+	+ Empty cut property (zero cut <-> disconnected): guarantees the algorithm continues untill all vertices are included.
+	+ Double-crossing cut property: assure no cycle produced since Prim's algorithm advances 1 edge at the time, and that edge has no loop back (thanks to the removal step after inclusion).
+- **Cut Property**: if there exists a cut (A, B) of graph G and e is the cheapst crossing edge between A and B **THEN** e belongs to a MST (the MST if all costs are distinct) of G. 
+
+Algorithm: proceeding similar to Dijkstra's algorithm. Continuously adding vertices (with the least cost connected edge) to the spanning tree and keeping track of the frontier.
 
 ## Topological Sorting
 

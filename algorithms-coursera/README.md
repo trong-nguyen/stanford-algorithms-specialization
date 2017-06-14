@@ -29,7 +29,7 @@ Foundation on:
 	+ Double-crossing cut property: assure no cycle produced since Prim's algorithm advances 1 edge at the time, and that edge has no loop back (thanks to the removal step after inclusion).
 - **Cut Property**: if there exists a cut (A, B) of graph G and e is the cheapst crossing edge between A and B **THEN** e belongs to a MST (the MST if all costs are distinct) of G. 
 
-Algorithm: proceeding similar to Dijkstra's algorithm. Continuously adding vertices (with the least cost connected edge) to the spanning tree and keeping track of the frontier.
+Algorithm: proceeding similar to Dijkstra's algorithm. From one of the node in the frontier (minimum-degree vertices), continuously adding vertices (with the least cost connected edge) to the spanning tree and keeping track of the frontier.
 
 ## Topological Sorting
 

@@ -20,16 +20,49 @@ Algorithms that use greedy method differ from those using dynamic programming in
 - In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
 - Dynamic programming uses bottom-up approach, greedy method uses top-down.
 
-## Minimum Spanning Tree (MST) - Prim's Algorithm
+## Prim's Algorithm for Minimum Spanning Tree (MST) Problem
 Complexity: O(mlogn) using heap
 
-Foundation on:
+![](https://i.stack.imgur.com/KofyW.gif)
+
+Foundation:
 - Prim's algorithm guarantees to output a spanning tree (not neccessarily minimum): this in turn relies on:
 	+ Empty cut property (zero cut <-> disconnected): guarantees the algorithm continues untill all vertices are included.
 	+ Double-crossing cut property: assure no cycle produced since Prim's algorithm advances 1 edge at the time, and that edge has no loop back (thanks to the removal step after inclusion).
 - **Cut Property**: if there exists a cut (A, B) of graph G and e is the cheapst crossing edge between A and B **THEN** e belongs to a MST (the MST if all costs are distinct) of G. 
 
-Algorithm: proceeding similar to Dijkstra's algorithm. From one of the node in the frontier (minimum-degree vertices), continuously adding vertices (with the least cost connected edge) to the spanning tree and keeping track of the frontier.
+Algorithm: proceeding somehow similar to Dijkstra's algorithm:
+
+- Take an arbitrary vertice v of G with an arbitrary node
+- Add all edges with v as the endpoint to the heap (this is the frontier edges)
+- Iterate through all edges in the heap and pop the one with lowest cost:
+	+ if the edge loop back to one of the vertices in MST, ignore it
+	+ if one end u of the edge lies outside of the MST, add it to the MST and add all edges associated to u (which is not already in the MST) to the heap
+- Terminate when the MST fully spans graph G (has the same number of nodes as G's)
+
+[Code here](prim_mst.py)
+```python
+v = arbitrary_vertice_from(G)
+MST = {}
+heap = heapify([(cost, (v, u)) for u, cost in G[v]])
+while len(MST) != len(G) and heap:
+	cost, edge = pop_min(heap) # pick the min cost edge
+	if edge in MST: # both endpoints already in MST
+		continue # discard and ignore
+	u = old_node(edge) # the endpoint already in MST
+	v = new_node(edge) # the one that is not
+
+	MST[u][v] = MST[v][u] = cost 
+
+	for neighbor, cost in G[v] if neighbor not in MST:
+		edge = (v, neighbor)
+		add (cost, edge) to heap
+```
+
+Analysis: the iteration is at most m size since it does not visit any edge more than twice (first to push to the heap, and second to pop it). For each edge considered, it takes O(logn) to pop the min cost edge or push it to the heap. Though there is not a clear cut between heap poping and pushing, they intertwine (a few poping occur until a crossing edge found and then a few pushing to add connectivities of the new node to the heap) when we advance the frontier vertices. However, it will never take more than one poping and one pushing for an edge in total.
+
+**Total: O(mlogn)**
+
 
 ## Topological Sorting
 

@@ -70,14 +70,18 @@ Complexity: **O(mlogn)** using Union-Find data structure
 
 Note: Asymptotically, O(mlogm) is equivalent to O(mlogn) since at most m = n<sup>2</sup> hence at most logm = 2logn and thus O(logm) = O(logn).
 
-The idea: Sorting edges based on their costs. From the lowest to highest cost edges, keep adding the edge to the MST if it does not make a cycle when added. Pictorially, the algorithm forms multiple disconnected components (initially size n, meaning n disconnected components each contains a single vertex) and fuses them together when iterating over. The key point to the algorithm is in efficiently checking cycle edge. To determine if an edge creates a cycle we need to be sure that they are not belong to the same component. The Union-Find datastructure makes it possible to efficiently check this property in constant time O(1) and O(logn) to maintain which all together contributes to O(mlogn) complexity. On the note of maintenance cost, there is a technique for updating leader nodes of the smaller size component, thus the size of the fused component keeps increasing of atleast 2 folds. Hence at most a logarithmic number of updates are needed to update the leader node. 
+The idea: Sorting edges based on their costs. From the lowest to highest cost edges, keep adding the edge to the MST if it does not make a cycle when added. Pictorially, the algorithm forms multiple disconnected components (initially size n, meaning n disconnected components each contains a single vertex) and fuses them together when iterating over. The key point to the algorithm is in efficiently checking cyclic edges. To determine if an edge creates a cycle we need to be sure that it is not belong to the same component. The Union-Find datastructure makes it possible to efficiently check this property in constant time O(1) and O(logn) to maintain which all together contributes to O(mlogn) complexity. On the note of maintenance cost, there is a technique for updating leader nodes of the smaller size component, thus the size of the fused component keeps increasing of atleast 2 folds. Hence at most a logarithmic number of updates are needed to update the leader node. 
 
 ![Imgur](http://i.imgur.com/Q7n1UxE.png)
 
 Advanced:  
 - Theoreticall, it was proven (Pettie, Ramachandran, Chazelle) that the fastest algorithm possible for the MST problem is somewhere between linear and O(m) O(m α(n)) where α is the inverse Ackerman function, an extremely slow growing function, slower than log*n (log of log of log...).
 - Randomized algorithm (Karger - Klein - Tarjan, 1995) can achieve O(m) efficiency. Of all the possible spanning trees find the one with the lowest cost.
-- Union-Find datastructure. Path-compression technique. Merge by rank (choose the smaller size component to update).
+- Union-Find datastructure. Lazy union. Path-compression technique. Union by rank (choose the smaller size component to update).
+
+### Application: K-clustering
+
+In machine learning, the k-clustering technique is used in unsupervised learning (without labels, compute similar groups based on defined similarity features). The execution of k-clustering method is similar to that of Kruskal's algorithm for MST, only that it might halt earlier (k, number of clusters, vs 1, which represents the single tree in MST). The algorithm keeps merging disconnected clusters, starting from maximum possible number of clusters (which is n) down to only k clusters, on the basis of eliminating pairs of points that has currently lowest similarity measures, such as Euclidean distances between points. Note that the number of clusters will reduce by one if the eliminated edge is the crossing edge.
 
 ## Topological Sorting
 

@@ -1,14 +1,35 @@
+import operator
+
 class UnionFind(object):
-	"""docstring for UnionFind"""
-	VERTICE_NOT_FOUND = -1
+	"""
+	Datastructure for quick querying and merging of items in clusters
+	Theoretical complexity: O(log*n)
+	- Merge by rank
+	- Path compression
+
+	The current implementation has a complexity of O(logn) for union 
+	due to forced updating leader of all merged vertices
+	"""
+
+	RANK_IDX = 1
+	VERT_IDX = 0
+
 	def __init__(self, vertices):
 		super(UnionFind, self).__init__()
 		self.my_leader = {v: [v, 0] for v in vertices}
-		self.my_children = {v: (v,) for v in vertices}
+		self.groups = len(vertices)
 
 	def find(self, v):
-		vr = self.my_leader.get(v, (self.VERTICE_NOT_FOUND, 0))
-		return vr[0]
+		root = v
+		leader = None #arbitrary
+		while leader != root:
+			leader = root
+			root = self.my_leader[root][self.VERT_IDX]
+
+		#updating
+		self.my_leader[v][self.VERT_IDX] = root
+
+		return root
 
 	def union(self, u, v):
 		u_cluster = self.find(u)
@@ -17,8 +38,8 @@ class UnionFind(object):
 		if u_cluster == v_cluster:
 			return False
 
-		u_rank = self.my_leader[u_cluster][1]
-		v_rank = self.my_leader[v_cluster][1]
+		u_rank = self.my_leader[u_cluster][self.RANK_IDX]
+		v_rank = self.my_leader[v_cluster][self.RANK_IDX]
 
 		# Merge by rank
 			# get the higher ranked cluster
@@ -26,23 +47,26 @@ class UnionFind(object):
 			# get the lower ranked cluster
 		subtree_leader = v_cluster if leader == u_cluster else u_cluster
 
-		# update children's leader
-		subtree_underlings = self.my_children[subtree_leader]
-
-		self.my_children[leader] += subtree_underlings
-		for underling in subtree_underlings:
-			# leader changed, not rank
-			self.my_leader[underling][0] = leader
+		self.my_leader[subtree_leader][self.VERT_IDX] = leader
 
 		# delete subtree_leader
-		del self.my_children[subtree_leader]
+		self.groups -= 1
 
 		# update leader's rank
-		self.my_leader[leader][1] += 1		
+		self.my_leader[leader][self.RANK_IDX] += 1		
 		return True
 
 	def __len__(self):
-		return len(self.my_children)
+		return self.groups
 
 	def get(self):
-		return self.my_children.values()
+		'''
+		Get the groups of clustered vertices
+		'''
+
+		clusters = {}
+		for v, (leader, rank) in self.my_leader.iteritems():
+			clusters[leader] = clusters.get(leader, [])
+			clusters[leader].append(v)
+		return clusters.values()
+

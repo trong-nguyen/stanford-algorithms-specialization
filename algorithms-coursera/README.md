@@ -81,7 +81,15 @@ Advanced:
 
 ### Application: K-clustering
 
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WCUFA5mGJADsiDn3HPxuuCQ6bXjVy32fDzGRJGXM0szwwnXj)
+
 In machine learning, the k-clustering technique is used in unsupervised learning (without labels, compute similar groups based on defined similarity features). The execution of k-clustering method is similar to that of Kruskal's algorithm for MST, only that it might halt earlier (k, number of clusters, vs 1, which represents the single tree in MST). The algorithm keeps merging disconnected clusters, starting from maximum possible number of clusters (which is n) down to only k clusters, on the basis of eliminating pairs of points that has currently lowest similarity measures, such as Euclidean distances between points. Note that the number of clusters will reduce by one if the eliminated edge is the crossing edge.
+
+Hamming distance: number of differences in corresponding i-th features of two sample points.
+
+**Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 40 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)). 
+
+**The takeaway here is even for seemingly over-complicated problems, careful analysis of boundary conditions or problem definition space, there might exist approaches that are able to explore the boundary conditions and significantly reduce the hardness level.**
 
 ## Topological Sorting
 

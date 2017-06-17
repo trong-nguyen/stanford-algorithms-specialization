@@ -8,15 +8,6 @@ def read_graph(f):
 	data = [map(int, d.split()) for d in data]
 	data = filter(bool, data)
 
-	# graph = {}
-
-	# for u, v, cost in data:
-	# 	for x, y in zip((u, v), (v, u)):
-	# 		graph[x] = graph.get(x, {})
-	# 		graph[x][y] = cost
-
-	# return graph
-
 	return data
 
 def k_cluster(graph, k):
@@ -34,11 +25,6 @@ def k_cluster(graph, k):
 		# to find the correct min spacing
 		if len(ufc) == k:
 			clusters = ufc.get()
-
-		# print spacing, min_spacing
-		# print 'len', len(ufc), (u, v)
-		# if len(ufc) == 4:
-		# 	print ufc.get()
 
 	# in case of a single cluster, theoretically min_spacing should be infinite
 	if len(ufc) == 1:
@@ -126,5 +112,5 @@ def test_assignment():
 	print 'Minimum spacing for Question 1', res_spacing
 
 test_basic()
-# test()
+test()
 test_assignment()

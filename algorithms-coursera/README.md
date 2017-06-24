@@ -10,10 +10,21 @@ Algorithms use one or more of the following methods:
 Sorting algorithms (merge, quick)
 - Randomized algorithms  
 Quick sort
-- Dynamic programming  
-Fractional knapsack problem
+- Dynamic programming: the solutions to subproblems are mostly similar, hence can be reused to tremendously speedup computation.
+	+ Max-weight independent set (textbook problem)
+	+ Fractional knapsack problem
 - Greedy method: relies on the local **optimal subtructure** property of the problem.  
 Dijkstras's method, activity selection, 0-1 (binary) Knapsack problem
+
+### Dynamic programming ingredients:
+1) the problems can be divided into finite sub-problems. 
+2) the solution to the upper-problem depends on the solutions to the sub-problems in a simple expression (think max, min, add ...)
+3) the original solution is the so
+lution to the subproblem of the biggest size within the boundary (space) of the original problem.
+
+### Dynamic programming vs Divide and Conquer:
+Similar to divide and conquer, the original problem can be divided into subproblems. However, unlike divide and conquer, where the solutions to sub-problems are clear-cut (think merging) or relatively separated (think in finding smallest-distance pair, we only need to consider a small region where the subproblems relate, to be exact 2*δx), the subproblems in dynamic programming intertwine, where some or most of the solution to this subproblem is present in another (think 50% in independent set problem). Hence if there is a technique (memoization) that can save the solutions of subproblems, tremendous speedup is achievable (eg. exponential to linear in max-weight independent set problem).
+
 
 ### Dynamic programming vs Greedy method:
 Algorithms that use greedy method differ from those using dynamic programming in the following ways:
@@ -87,7 +98,7 @@ In machine learning, the k-clustering technique is used in unsupervised learning
 
 Hamming distance: number of differences in corresponding i-th features of two sample points.
 
-**Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 40 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)). 
+**Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 20 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)). 
 
 **The takeaway here is even for seemingly over-complicated problems, careful analysis of boundary conditions or problem definition space, there might exist approaches that are able to explore the boundary conditions and significantly reduce the hardness level.**
 

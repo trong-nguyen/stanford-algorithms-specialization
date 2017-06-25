@@ -13,8 +13,11 @@ Quick sort
 - Dynamic programming: the solutions to subproblems are mostly similar, hence can be reused to tremendously speedup computation.
 	+ Max-weight independent set (textbook problem)
 	+ Fractional knapsack problem
-- Greedy method: relies on the local **optimal subtructure** property of the problem.  
-Dijkstras's method, activity selection, 0-1 (binary) Knapsack problem
+- Greedy method: relies on the **local** optimal subtructure property of the problem.  
+	+ Dijkstras's method
+	+ Activity selection
+	+ Huffman encoding algorithm
+	+ 0-1 (binary) Knapsack problem
 
 ### Dynamic programming ingredients:
 1) the problems can be divided into finite sub-problems. 

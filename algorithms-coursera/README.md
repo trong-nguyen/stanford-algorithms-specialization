@@ -34,6 +34,63 @@ Algorithms that use greedy method differ from those using dynamic programming in
 - In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
 - Dynamic programming uses bottom-up approach, greedy method uses top-down.
 
+## Huffman coding algorithm - Greedy
+Complexity: O(nlogn) using heap or 2 queues. Code [here](huffman_encoding.py)
+
+![](https://1.bp.blogspot.com/-IeNrHoXgn-0/VzgysPXhG3I/AAAAAAAAcrU/4IWDHf2IWCs8bDcd81WvcV3NCNNbFFCZwCLcB/s1600/huff.png)
+
+Applications: used in MPEG3, JPEG media encoding (though partially)
+
+The idea is based on the local optimal substructure: the two least frequent symbols can be optimally replaced by a merged node with one of the leaf has label 0 and the other 1. The process if iteratively carried out minimize the expected Σ(pi x li) where li is the length (in terms of bits) of the encoded symbol.
+
+![](http://collegelabs.co/clabs/nld/images/huffman_final.gif)
+
+Algorithm: using 2 queues to sequentially build the binary tree with leaves the encoded symbols.
+- Presorting the vertices by their weights and put them to queue 1
+- Initialize queue 2 with zero item. This queue will take in merged vertices.
+- While there is more than 1 node in both queues:
+	+ Pop the 2 smallest weight items of the 2 queues. They can be both from queue 1 or queue 2 or in either.
+	+ Merge them and enqueue it to queue 2
+	+ Could use a map to maintain the coded bit at that particular branch (accumulate later to get the complete code for that node)
+- Stop when there are only 2 nodes remained in 2 queues. Merge them and name the merged node to be the root.
+
+## Max Weight Independent Set - Dynamic Programming
+Complexity: O(n)
+![](https://upload.wikimedia.org/wikipedia/commons/b/bd/Mis_pathgraph_p3.png)
+
+This is a astonishing illustration for the fact that: "more math requires less code and more code probably due to insufficient math". The algorithm is elegant and extremely simple for a problem appeared to be mind-bending at first. For a path graph with weights, or an array of weights, find a set of nodes that has the highest sum of weights, on the condition that no consecutive nodes are choosen. The brute force approach has to work on exponential number of possibilities (most of them repeated). On rigorous analysis and making use of dynamic programming paradigm, the possibilities are drastically reduced and a linear complexity can be achieved.
+
+Algorithm: create an array A that has the same size as that of the weight array (W). At index i-th is the optimal accumulated weights for the subproblem, an array of size [0-i] with i node inclusive. To fill in values for array A, we use the bottom to top approach. The first and second values of array A are straightforward to compute, where A[0] = W[0] and A[1] = max(W[0], W[1]). For the third and beyond we have a recursive formula: A[i] = max(A[i-1], A[i-2] + W[i]). Array A gives accumulated maximal weights of array A[0-i] at each position. To retrieve which vertex were actually included in the set we can iterate from top to bottom. At index i-th, the vertex i-th is not included if A[i] is the same as A[i-1], and included if A[i] is larger than A[i-1], in which case we can skip vertex i-1 since it is the adjacent vertex.
+```python
+# bottom to top to fill in cache values A
+def max_weight_set(weights):
+	A = [0] * len(weights)
+	A[0] = weights[0]
+	A[1] = max(A[0], weights[1])
+	for i in range(2, len(A)):
+		A[i] = max(weights[i] + A[i-2], A[i-1])
+	return A
+
+# top to bottom to get the selected set
+def retrieve_set(A):
+	selected = [0] * len(A)
+	i = len(A) - 1
+	while i >= 1:
+		if A[i] == A[i-1]:
+			selected[i] = 0
+			i -= 1
+		else:
+			selected[i] = 1
+			i -= 2
+	selected[0] = int(not selected[1])
+
+	return selected
+```
+
+Advanced: max weight independent set applied to graph. The algorithm developed for a path graph can be applied efficiently and correctly to tree.
+
+![](http://mathworld.wolfram.com/images/eps-gif/MaximumIndependentSet_1000.gif)
+
 ## Prim's Algorithm for Minimum Spanning Tree (MST) Problem
 Complexity: O(mlogn) using heap
 
@@ -103,7 +160,7 @@ Hamming distance: number of differences in corresponding i-th features of two sa
 
 **Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 20 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)). 
 
-**The takeaway here is even for seemingly over-complicated problems, careful analysis of boundary conditions or problem definition space, there might exist approaches that are able to explore the boundary conditions and significantly reduce the hardness level.**
+**The takeaway here is even for seemingly over-complicated problems, careful analysis of boundary conditions or problem definition space, there might exist approaches that are able to exploit the boundary conditions and significantly reduce the hardness level.**
 
 ## Topological Sorting
 

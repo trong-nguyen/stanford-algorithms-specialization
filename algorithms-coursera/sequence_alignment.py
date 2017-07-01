@@ -78,7 +78,7 @@ def retrieve(x, y, A):
 	# visual processing
 	mx = mx.replace(')(', '')
 	my = my.replace(')(', '')
-	
+
 	return mx, my, penalty
 
 def test_basic():
@@ -86,6 +86,7 @@ def test_basic():
 		('abcde', 'cce', 3),
 		('abcde', 'ace', 2),
 		('xyzwvu', 'xyzwvu', 0),
+		('abcd', 'ace', -1),
 		('lksajdhf902uklajsdfpoiwer', 'abcde;laksdf902734h', -1),
 		(';lkasdfoiu2098374kjhsdlfkup29834hsakfdjh9823', 'kalshjfdpoiuer987123hfskdjlhfliuasyf98234', -1),
 	]):
@@ -100,7 +101,7 @@ def test_basic():
 
 		mx, my, pe = retrieve(x, y, A)
 
-		print 'Matching pattern costs [{}/{}] penalty, () and _ mean unmatched and gap insertion, respectively:\n\t{}\n\t{}'.format(pe, max(len(x), len(y)), mx, my)
+		print 'Matching pattern costs [{}/{}] penalty, () and _ mean mismatched and gap insertion, respectively:\n\t{}\n\t{}'.format(pe, max(len(x), len(y)), mx, my)
 		if expected_penalty >= 0:
 			assert pe == expected_penalty, 'Failed, expected penalty {}, result'.format(expected_penalty, pe)
 

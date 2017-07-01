@@ -10,7 +10,7 @@ Algorithms use one or more of the following methods:
 Sorting algorithms (merge, quick)
 - Randomized algorithms  
 Quick sort
-- Dynamic programming: the solutions to subproblems are mostly similar, hence can be reused to tremendously speedup computation.
+- Dynamic programming: the solutions to subproblems are mostly similar, hence can be reused to tremendously speedup computation. The term dynamic programming is closer to data tabulation than to programming due to a historial reason.
 	+ Max-weight independent set (textbook problem)
 	+ Fractional knapsack problem
 - Greedy method: relies on the **local** optimal subtructure property of the problem.  
@@ -33,6 +33,82 @@ Similar to divide and conquer, the original problem can be divided into subprobl
 Algorithms that use greedy method differ from those using dynamic programming in the following ways:
 - In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
 - Dynamic programming uses bottom-up approach, greedy method uses top-down.
+
+## Knapsack Problem - Dynamic Programming
+Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Knapsack.svg/250px-Knapsack.svg.png)
+![](https://i.ytimg.com/vi/mZccw_6hOGU/maxresdefault.jpg)
+K here is the same as table A in the explanation.
+
+**Problem**: given a number of items with corresponding value v<sub>i</sub>	and weight w<sub>i</sub>. Find a subset S that maximizes the accumulated item value subjected to total weight constraint W.
+
+Utilizing the local optimal substructure that an item i-th is either belonging to the optimal set S or not. When it is, we work on the subproblem with new weight constraint W-w<sub>i</sub> and added value v<sub>i</sub>. When it is not, we work on the subproblem with item i-th excluded.
+
+**Algorithm**: [code](./knapsack.py)
+
+Finding optimal values step: form a 2D-array with n columns representing the selection of item i-th and W rows representing the optimal values selected at weight limit w<sub>j</sub>.
+- Fill zeros into colum 0, implying there is no value could be knapped with 0 item selected.
+- At column i and weight j, the optimal value is a) either inherited from column [i-1, <sub>j</sub>] meaning the optimal value when item i not considered is still optimal when it is, OR b) the sum of the value v<sub>i</sub> and the prior optimal value of the sub problem [i-1, W-w<sub>i</sub>], depending on which one has the larger value.
+- The value at column i-th and row-j is the optimal value of the knapsack problem when items from 1 to i-th considered and the total weight is limited by w<sub>j</sub>.
+
+Retrieval step: using table A in the finding step to retrieve the actual items that have been knapped in the optimal set S.
+- Starting from column n-th and row W, the optimal value for the orignal Knapsack problem [n, W], we determine to whether or not item i-th was included.
+- To find out, we need to track where the value at cell [i,j] came from. If its value was inherited from the adjacent left column A[i,j] = A[i-1,j] then item i-th was not included. Otherwise if A[i,j] = A[i-1, j-w<sub>i</sub>], then it was included.
+- Repeat the process until we hit the the zero residue, meaning all items included in the optimal set were accounted for.
+
+## Sequence Alignment - Dynamic Programming
+**Complexity**: O(nm) where n and m are the length of to be aligned strings, respectively.
+
+![](https://upload.wikimedia.org/wikipedia/commons/3/3f/Needleman-Wunsch_pairwise_sequence_alignment.png)
+
+**Problem**: Given 2 strings x and y, find the alignment which minimize the penalty due to mismatched and gaps insertion. Gaps are allowed to insert into the original strings to facilitate the alignment. Example: the alignment for string abcd and ace would be: abcd and a_ce, and the penalty would be 2 due to 1 gap inserted and 1 mismatch (d and e), presume that mismatch penalty = gap penalty = 1.
+
+**Algorithm**:
+This algorithm is amazing. It is almost impossibly hard to fathom the solution without applying dynamic programming.
+
+Calculating minimized penalty step:
+- Form a n+1 by m+1 matrix where n and m are lengths of string x and y, in that order. The first column and row are for empty match, i.e. string x matches 0 characters of string y and vice versa.
+- Fill in the column 0 and row 0 with gap penalties. The value at cell i,j is the minimal penalty of matching sub-strings x[0:i] and y[0:j].
+```python
+A[i][0] = i * gap_penalty
+A[0][j] = j * gap_penalty
+```
+- At subsequent cells i, j where i, j >= 1: there are 3 possibilities to account for:
+```python
+A[i][j] = min(
+	penalty(x[i], y[j]) + A[i-1][j-1], #penalty = 0 if characters match (x[i] = y[j]) or mismatch_penalty otherwise
+	gap_penalty + A[i-1][j], #we insert a gap and assume the penalty of the gap plus the minimal penalty of the sub problem (x[0:i-1] and y[0:j]), i.e. peel off one letter of the substring x[0:i]
+	gap_penalty + A[i][j-1] #similar to case 2 we insert a gap and assume the penalty of the gap plus the minimal penalty of the sub problem (x[0:i] and y[0:j-1]), i.e. peel off one letter of the substring y[0:j]
+)
+```
+
+Retrieval step:
+- Starting from the furthest cell i=m, j=n
+- Compute the values of the 3 possibilities which might lead to the value at cell i, j
+```python
+p1 = penalty(x[i], y[j]) + A[i-1][j-1]
+p2 = gap_penalty + A[i-1][j]
+p3 = gap_penalty + A[i][j-1]
+if: 
+	A[i][j] == p1: # no_gap_inserted, characters i and j might match or not
+		i -= 1, j -= 1
+	A[i][j] == p2: # gap_inserted_in_y
+		i -= 1
+	A[i][j] == p3: # gap_inserted_in_x
+		j -= 1
+```
+- Repeat until all characters exhausted, i = 0 and j = 0
+
+Example: align string
+* x = lkasdfoiu2098374kjhsdlfkup29834hsakfdjh9823
+* y = kalshjfdpoiuer987123hfskdjlhfliuasyf98234
+```
+Matching pattern costs [32/44] penalty, () and _ mean mismatched and gap insertion, respectively:
+	(_;)l(_kas)d(f)oiu(20)98(3)7(4kj)h(sdl)f(kup29834hs)a(kfdjh)9823(_)
+	(ka)l(shjf)d(p)oiu(er)98(_)7(123)h(___)f(skdjlhfliu)a(__syf)9823(4)
+```
+
 
 ## Huffman coding algorithm - Greedy
 Complexity: O(nlogn) using heap or 2 queues. Code [here](huffman_encoding.py)

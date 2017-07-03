@@ -110,17 +110,13 @@ Matching pattern costs [32/44] penalty, () and _ mean mismatched and gap inserti
 ```
 
 ## Optimal Binary Search Tree - Dynamic Programming
-**Complexity**: O(n<sup>3</sup>) or O(n<sup>2</sup>) using Knuth's optimization technique
+**Complexity**: O(n<sup>2</sup>) with Knuth's optimization technique
 
 ![](http://slideplayer.com/6825567/23/images/5/Optimal+Binary+Search+Tree.jpg)
 ![](http://www.readorrefer.in/media/extra/zqpivcU.jpg)
 
 
 **Problem**: building an optimal binary search tree with minimal search cost, given search probabilities of all items. The solution for this problem is a step up in applying dynamic programming paradigm, when the possibilities to consider in the innermost loop - the substructure - is of O(n) instead of O(1) in knapsack or sequence alignment problems.
-
-Further reading:
-- [Implementation guide](http://www.cs.duke.edu/courses/fall05/cps230/L-06.pdf)
-- [Knuth's article](http://www.inrg.csie.ntu.edu.tw/algorithm2014/presentation/Knuth71.pdf)
 
 **Algorithm**: building a 2D array
 - Working on upper half triangle of the matrix
@@ -129,7 +125,21 @@ Further reading:
 - The process is carried out diagonally and shifting upward when j moves from 0 to n
 - The solution is at the final value A[1,n], representing the subproblem with size [1:n], which is also the original problem.
 
-**Knuth's optimization technique**: the innermost loop instead of scanning the cost of subtrees having root from i to j, now ranges from the root of the sub trees [i,j-1] and [i+1, j], i.e. the subtrees obtained by peeling off one element on the left and right, respectively.
+**Knuth's optimization technique**: observe that the tree root can only be located in between the subtree roots. Of all the possible sub tree roots, we grasp:
+- the biggest possible left tree T1=[i:j-1], which means T = T1 + root + empty right subtree
+- the biggest possible right tree T2=[i+1:j], which means T = empty left tree + root + T2.
+
+From there, we can modify the innermost loop such that instead of scanning the cost of all possible subtrees having root from i to j, we only look at optimal roots ranges from the root of the sub trees [i,j-1] and [i+1, j], i.e. the subtrees obtained by peeling off one element on the left and right, respectively. This optimization requires maintaning a separate array of the optimal root index R where R<sub>i,j</sub> coressponds to the optimal root index of the sub problem [i:j].
+
+
+**Tree Retrieval**: to retrieve the actual search tree, we use array R. 
+- The root node r1 is obtained from R[1,n], which translates to the optimal problem of size [1:n] or our original problem.
+- From there we can deduce the left branch root left_root = R[1,r1-1] and right right_root = R[r1+1,n] only if the respective left/right subproblem is not empty.
+- Recursively we then could obtain the entire tree.
+
+Further reading:
+- [Implementation guide](http://www.cs.duke.edu/courses/fall05/cps230/L-06.pdf)
+- [Knuth's article](http://www.inrg.csie.ntu.edu.tw/algorithm2014/presentation/Knuth71.pdf)
 
 ## Huffman coding algorithm - Greedy
 Complexity: O(nlogn) using heap or 2 queues. Code [here](huffman_encoding.py)

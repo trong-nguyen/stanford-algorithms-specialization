@@ -46,21 +46,38 @@ def sack(values_weights, A):
 
 
 def test_basic():
-	print 'Test 1'
-	vw = [(3,4), (2,3), (4,2), (4,3)]
-	W = 6
-	A = knap(vw, W)
-	items = sack(vw, A)
-	print_cache(A)
-	print '\nSacked items:', items
-	assert items == [(4,2), (4,3)], 'Test failed, knapped the wrong items, expected {} , result {}'.format(expected, items)
+	for tc, (vw, W, expected) in enumerate([
+		([(3,4), (2,3), (4,2), (4,3)], 6, [(4,2), (4,3)]),
+		([(3,4), (2,3), (4,2), (4,3), (3,9), (4,2), (4,1), (5,6), (9,4)], 9, None),
+	]):
+		print 'Test', tc + 1
+		A = knap(vw, W)
+		items = sack(vw, A)
+		print_cache(A)
+		print '\nSacked items:', items
+		if expected != None:
+			assert items == expected, 'Test failed, knapped the wrong items, expected {} , result {}'.format(expected, items)
 
-	print '\nTest 2'
-	vw = [(3,4), (2,3), (4,2), (4,3), (3,9), (4,2), (4,1), (5,6), (9,4)]
-	W = 9
-	A = knap(vw, W)
-	items = sack(vw, A)
-	print_cache(A)
-	print '\nSacked items:', items
+
+def test_variation():
+	for tc, (vw, W, expected) in enumerate([
+		# ([(3,4), (2,3), (4,2), (4,3), (4,2), (4,1), (9,4)], 6, None),
+		# ([(3,4), (2,3),		   (4,3), (4,2), (4,1)		 ], 6, None),
+		# ([(3,4), (2,3), (4,2), (4,3), (4,2), (4,1), (9,4)], 12, None),
+		# ([(3,4), (2,3), (4,2), (4,3), (4,2), (4,1), (9,4)], 4, None),
+		# ([(3,4), (2,3), (4,2), (4,3), (4,2), (4,1)		 ], 4, None),
+		# ([(3,4), (2,3), (4,2), (4,3), (4,2), (4,1), (9,4)], 8, None),
+		([(2,2), (3,2), (2,2), (1,2)], 3, None),
+		([(2,2), 	  	(2,2), (1,2)], 5, None),
+		([(2,2), (3,2), (2,2), (1,2)], 8, None),
+	]):
+		print 'Test', tc + 1
+		A = knap(vw, W)
+		items = sack(vw, A)
+		print_cache(A)
+		print '\nSacked items:', items
+		if expected != None:
+			assert items == expected, 'Test failed, knapped the wrong items, expected {} , result {}'.format(expected, items)
 
 test_basic()
+test_variation()

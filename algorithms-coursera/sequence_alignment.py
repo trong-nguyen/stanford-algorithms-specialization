@@ -1,4 +1,5 @@
 GAP_PENALTY = 1
+MISMATCHED_PENALTY = 1
 MATCH_PENALTY = 0
 
 def preprocess(x, y):
@@ -44,7 +45,7 @@ def retrieve(x, y, A):
 	j = len(y) - 1
 
 	penalty = A[i][j]
-	p = [GAP_PENALTY, MATCH_PENALTY]
+	p = [MISMATCHED_PENALTY, MATCH_PENALTY]
 	mx = ''
 	my = ''
 	penalty = A[i][j]

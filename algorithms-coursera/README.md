@@ -64,7 +64,7 @@ Retrieval step: using table A in the finding step to retrieve the actual items t
 
 **Problem**: Given 2 strings x and y, find the alignment which minimize the penalty due to mismatched and gaps insertion. Gaps are allowed to insert into the original strings to facilitate the alignment. Example: the alignment for string abcd and ace would be: abcd and a_ce, and the penalty would be 2 due to 1 gap inserted and 1 mismatch (d and e), presume that mismatch penalty = gap penalty = 1.
 
-**Algorithm**:
+**Algorithm**: [code](./sequence_alignment.py)
 This algorithm is amazing. It is almost impossibly hard to fathom the solution without applying dynamic programming.
 
 Calculating minimized penalty step:
@@ -109,6 +109,27 @@ Matching pattern costs [32/44] penalty, () and _ mean mismatched and gap inserti
 	(ka)l(shjf)d(p)oiu(er)98(_)7(123)h(___)f(skdjlhfliu)a(__syf)9823(4)
 ```
 
+## Optimal Binary Search Tree - Dynamic Programming
+**Complexity**: O(n<sup>3</sup>) or O(n<sup>2</sup>) using Knuth's optimization technique
+
+![](http://slideplayer.com/6825567/23/images/5/Optimal+Binary+Search+Tree.jpg)
+![](http://www.readorrefer.in/media/extra/zqpivcU.jpg)
+
+
+**Problem**: building an optimal binary search tree with minimal search cost, given search probabilities of all items. The solution for this problem is a step up in applying dynamic programming paradigm, when the possibilities to consider in the innermost loop - the substructure - is of O(n) instead of O(1) in knapsack or sequence alignment problems.
+
+Further reading:
+- [Implementation guide](http://www.cs.duke.edu/courses/fall05/cps230/L-06.pdf)
+- [Knuth's article](http://www.inrg.csie.ntu.edu.tw/algorithm2014/presentation/Knuth71.pdf)
+
+**Algorithm**: building a 2D array
+- Working on upper half triangle of the matrix
+- Cell i,j contains the optimal weighted search cost for problems with size from i to j inclusive.
+- At each cell i, j, calculate cost of all the root possibilities in between [i:j] sum(p[i:j]) + C([i:r-1] + C([r+1:j]) where r is the test root index between i and j. Choose min value among all calculated cost with tested roots and  put it in cell i,j.
+- The process is carried out diagonally and shifting upward when j moves from 0 to n
+- The solution is at the final value A[1,n], representing the subproblem with size [1:n], which is also the original problem.
+
+**Knuth's optimization technique**: the innermost loop instead of scanning the cost of subtrees having root from i to j, now ranges from the root of the sub trees [i,j-1] and [i+1, j], i.e. the subtrees obtained by peeling off one element on the left and right, respectively.
 
 ## Huffman coding algorithm - Greedy
 Complexity: O(nlogn) using heap or 2 queues. Code [here](huffman_encoding.py)

@@ -47,12 +47,15 @@ Utilizing the local optimal substructure that an item i-th is either belonging t
 
 **Algorithm**: [code](./knapsack.py)
 
+Bottom up approach with iterations:  
 Finding optimal values step: form a 2D-array with n columns representing the selection of item i-th and W rows representing the optimal values selected at weight limit w<sub>j</sub>.
 - Fill zeros into colum 0, implying there is no value could be knapped with 0 item selected.
 - At column i and weight j, the optimal value is a) either inherited from column [i-1, <sub>j</sub>] meaning the optimal value when item i not considered is still optimal when it is, OR b) the sum of the value v<sub>i</sub> and the prior optimal value of the sub problem [i-1, W-w<sub>i</sub>], depending on which one has the larger value.
 - The value at column i-th and row-j is the optimal value of the knapsack problem when items from 1 to i-th considered and the total weight is limited by w<sub>j</sub>.
 
-Retrieval step: using table A in the finding step to retrieve the actual items that have been knapped in the optimal set S.
+Top down approach with recursions: starting at the desired level of n items and weights limit W, we ask the question: what do we need to compute this value. Using the same matrix from the bottom approach, we actually need the left [i-1:W] and [i-1:W-w] values. Recursion on the subproblems with those new limits lead to deeper recursions to solve our problem. Interestingly, it is also found that this approach helps skip a lot of unncessary levels of w, precisely between [w:W], i.e. {w+1, w+2 ..., W-1}. The larger the weights of items w<sub>i</sub> with respect to weight limits W, the more computational cost we save.
+
+Retrieval step: the following retrieval steps can succeed both top down and bottom up approach to find the actual knapsack items. It is indeed very similar to the top down approach, except that the necessary values has been known. Using either matrix A or hash table A in the finding step to retrieve the actual items that have been knapped in the optimal set S.
 - Starting from column n-th and row W, the optimal value for the orignal Knapsack problem [n, W], we determine to whether or not item i-th was included.
 - To find out, we need to track where the value at cell [i,j] came from. If its value was inherited from the adjacent left column A[i,j] = A[i-1,j] then item i-th was not included. Otherwise if A[i,j] = A[i-1, j-w<sub>i</sub>], then it was included.
 - Repeat the process until we hit the the zero residue, meaning all items included in the optimal set were accounted for.
@@ -118,7 +121,7 @@ Matching pattern costs [32/44] penalty, () and _ mean mismatched and gap inserti
 
 **Problem**: building an optimal binary search tree with minimal search cost, given search probabilities of all items. The solution for this problem is a step up in applying dynamic programming paradigm, when the possibilities to consider in the innermost loop - the substructure - is of O(n) instead of O(1) in knapsack or sequence alignment problems.
 
-**Algorithm**: building a 2D array
+**Algorithm**: [code](./bst.py) building a 2D array
 - Working on upper half triangle of the matrix
 - Cell i,j contains the optimal weighted search cost for problems with size from i to j inclusive.
 - At each cell i, j, calculate cost of all the root possibilities in between [i:j] sum(p[i:j]) + C([i:r-1] + C([r+1:j]) where r is the test root index between i and j. Choose min value among all calculated cost with tested roots and  put it in cell i,j.

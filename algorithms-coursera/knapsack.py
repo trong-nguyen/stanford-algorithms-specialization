@@ -117,7 +117,7 @@ def test_basic():
 		res = knap_top(vw, len(vw), W, A)
 		items = sack_top(vw, W, A)
 
-		# print_cache(knap(vw, W))
+		print_cache(knap(vw, W))
 		# print_cache(A)
 		print '\nSacked items:', items
 		if expected != None:
@@ -188,6 +188,10 @@ def test_assignments():
 	]:
 		ip = tc
 		W, vw = read_inputs(ip)
+
+		# preprocess
+		vw = sorted(vw, key=lambda x: x[1])
+
 		# A = knap(vw, W)
 		# res = A[-1][-1]
 
@@ -201,4 +205,4 @@ def test_assignments():
 test_basic()
 # test_variation()
 # test()
-test_assignments()
+# test_assignments()

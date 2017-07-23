@@ -4,6 +4,12 @@ Class: Algorithms Divide and Conquer
 Lecturer: Tim Roughgarden - Professor at Stanford University  
 Published: 2012  
 
+# Who are you?
+
+![Imgur](http://i.imgur.com/c7uj0T1.png)
+
+I was at level 1. Now 1.5. Pushing myself to level 2.
+
 # Algorithm Design Analysis
 Algorithms use one or more of the following methods:
 - Divide and conquer  
@@ -33,6 +39,22 @@ Similar to divide and conquer, the original problem can be divided into subprobl
 Algorithms that use greedy method differ from those using dynamic programming in the following ways:
 - In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
 - Dynamic programming uses bottom-up approach, greedy method uses top-down.
+
+## Data Structures
+### Heap
+Synonymn: `priority queue`
+
+Complexity: O(logn) for basic operations.
+
+Fundamental operations:
+- Insertion
+- ExtractMin (or equiv. ExtractMax)
+
+Usecases: if we see problems involved sorting as static problems, i.e. we need a definite solution at the end of a process, then heaps are perfectly suitable for dynamic problems. That means problems increasing size over the time and we need a simple information at each timestep, e.g. `min` or `max` values or something that can be cleverly inferred from `min and max` - see application 2.
+
+**Applications**:
+
+![Imgur](http://i.imgur.com/yW2zi3u.png)
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

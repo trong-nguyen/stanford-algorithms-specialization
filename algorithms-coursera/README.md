@@ -244,6 +244,14 @@ Analysis: the iteration is at most m size since it does not visit any edge more 
 
 **Total: O(mlogn)**
 
+## Dijkstra - Shortest path finding
+
+References: 
+- [Dijkstra's algorithm on Wikipedia](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+- [Applications](http://www.csl.mtu.edu/cs2321/www/newLectures/30_More_Dijkstra.htm)
+
+![Imgur](http://i.imgur.com/m6WMtO9.png)
+
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure
 

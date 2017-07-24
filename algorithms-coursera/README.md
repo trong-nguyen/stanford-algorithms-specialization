@@ -46,15 +46,41 @@ Synonymn: `priority queue`
 
 Complexity: O(logn) for basic operations.
 
+![Imgur](http://i.imgur.com/luBB8J8.png)
+
 Fundamental operations:
 - Insertion
 - ExtractMin (or equiv. ExtractMax)
 
 Usecases: if we see problems involved sorting as static problems, i.e. we need a definite solution at the end of a process, then heaps are perfectly suitable for dynamic problems. That means problems increasing size over the time and we need a simple information at each timestep, e.g. `min` or `max` values or something that can be cleverly inferred from `min and max` - see application 2.
 
+
+
 **Applications**:
 
 ![Imgur](http://i.imgur.com/yW2zi3u.png)
+
+### Balanced Binary Search Tree
+
+| Operation / Structure | BBST    | BST     | Heap    | Hash Table |
+| --------------------- | ------- | ------- | ------- | ---------- |
+| Search         		| O(logn) | O(logn) |         | O(1) 	   |
+| Select         		| O(logn) | O(1) 	| O(n)    | O(n) 	   |
+| Min / Max         	| O(logn) | O(1) 	| O(1)    |   	 	   |
+| Pred / Succ         	| O(logn) | O(1) 	|         |   	 	   |
+| Rank         			| O(logn) | O(logn) |         |   	 	   |
+| Output in sorted order| O(n) 	  | O(n) 	|         |   	 	   |
+| Insert         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |
+| Delete         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |
+
+**Heap vs Binary Search Tree**:
+- Heap: parent's values are always smaller than or equal to children's values.
+
+![Heap](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Min-heap.png/240px-Min-heap.png)
+
+- Binary Search Tree: parent's values are larger than all values in the left subtree but smaller than those in the right subtree.
+![BST](https://www.tutorialspoint.com/data_structures_algorithms/images/binary_search_tree.jpg)
+
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

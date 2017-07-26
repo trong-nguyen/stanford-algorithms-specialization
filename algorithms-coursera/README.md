@@ -79,16 +79,36 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 ![Heap](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Min-heap.png/240px-Min-heap.png)
 
 - Binary Search Tree: parent's values are larger than all values in the left subtree but smaller than those in the right subtree.
+
 ![BST](https://www.tutorialspoint.com/data_structures_algorithms/images/binary_search_tree.jpg)
 
-![Imgur](http://i.imgur.com/YslNHov.png)
+![Imgur](http://i.imgur.com/y1zYnZm.png)
 
-**Red-Black tree**:
-- The whole point is to be a balanced tree, i.e. trees that guarantee heights of O(logn) hence ensure efficient operations.
+**Red-Black Tree**:
+- The whole point is to have a balanced tree, i.e. trees that guarantee heights of O(logn) hence ensure efficient operations. There is no additional fancy thing about the red-black trees in terms of features. **They are just binary search tree with better performance**.
 - Insertions mostly will introduce red nodes, readjustments (to maintain the invariants) will introduce black ones. That is how the number of red and black nodes are roughly in the same order.
+- Every insertion operation includes 2 phases: positioning (standard binary search tree insertion, e.g. end-insertion, rotations, bubling up, etc.) and color coding (e.g. red coloring then readjusting)
 - Readjustment: insert the new node as red node and bubble up if invariants are violated (two red in a row). Might involve rotations to increase efficiency.
 
 ![](http://www.geeksforgeeks.org/wp-content/uploads/redBlackCase2.png)
+
+**AVL Tree**:
+[Reference](https://stackoverflow.com/a/28846533)
+
+- insert: RB tree & avl tree has constant number of max rotation but RB tree will be faster because on average RB tree use less rotation.
+
+- lookup: AVL tree is faster, because AVL tree has less depth.
+
+- delete: RB tree has constant number of max rotation but AVL tree can have O(log N) times of rotation as worst. and on average RB tree also has less number of rotation thus RB tree is faster.
+
+For large data (millions):
+
+- insert: AVL tree is faster. because you need to lookup for a particular node before insertion. as you have more data the time difference on looking up the particular node grows proportional to O(log N). but AVL tree & RB tree still only need constant number of rotation at the worst case. Thus the bottle neck will become the time you lookup for that particular node.
+
+- lookup: AVL tree is faster. (same as in small data case)
+
+- delete: AVL tree is faster on average, but in worst case RB tree is faster. because you also need to lookup for a very deep node to swap before removal (similar to the reason of insertion). on average both trees has constant number of rotation. but RB tree has a constant upper bound for rotation.
+
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

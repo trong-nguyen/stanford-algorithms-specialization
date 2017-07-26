@@ -62,16 +62,16 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 
 ### Balanced Binary Search Tree
 
-| Operation / Structure | BBST    | BST     | Heap    | Hash Table |
-| --------------------- | ------- | ------- | ------- | ---------- |
-| Search         		| O(logn) | O(logn) |         | O(1) 	   |
-| Select         		| O(logn) | O(1) 	| O(n)    | O(n) 	   |
-| Min / Max         	| O(logn) | O(1) 	| O(1)    |   	 	   |
-| Pred / Succ         	| O(logn) | O(1) 	|         |   	 	   |
-| Rank         			| O(logn) | O(logn) |         |   	 	   |
-| Output in sorted order| O(n) 	  | O(n) 	|         |   	 	   |
-| Insert         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |
-| Delete         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |
+| Operation / Structure | BBST (red-black)    | BST     | Heap    | Hash Table | Some  |
+| --------------------- | ------- | ------- | ------- | ---------- | ---------- |
+| Search         		| O(logn) | O(logn) |         | O(1) 	   |            |
+| Select         		| O(logn) | O(1) 	| O(n)    | O(n) 	   |            |
+| Min / Max         	| O(logn) | O(1) 	| O(1)    |            |            |
+| Pred / Succ         	| O(logn) | O(1) 	|         |   	 	   |            |
+| Rank         			| O(logn) | O(logn) |         |   	 	   |            |
+| Output in sorted order| O(n) 	  | O(n) 	|         |   	 	   |            |
+| Insert         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
+| Delete         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
 
 **Heap vs Binary Search Tree**:
 - Heap: parent's values are always smaller than or equal to children's values.
@@ -81,6 +81,14 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 - Binary Search Tree: parent's values are larger than all values in the left subtree but smaller than those in the right subtree.
 ![BST](https://www.tutorialspoint.com/data_structures_algorithms/images/binary_search_tree.jpg)
 
+![Imgur](http://i.imgur.com/YslNHov.png)
+
+**Red-Black tree**:
+- The whole point is to be a balanced tree, i.e. trees that guarantee heights of O(logn) hence ensure efficient operations.
+- Insertions mostly will introduce red nodes, readjustments (to maintain the invariants) will introduce black ones. That is how the number of red and black nodes are roughly in the same order.
+- Readjustment: insert the new node as red node and bubble up if invariants are violated (two red in a row). Might involve rotations to increase efficiency.
+
+![](http://www.geeksforgeeks.org/wp-content/uploads/redBlackCase2.png)
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

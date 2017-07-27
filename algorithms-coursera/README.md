@@ -60,7 +60,18 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 
 ![Imgur](http://i.imgur.com/yW2zi3u.png)
 
+**Heap vs Binary Search Tree**:
+- Heap: parent's values are always smaller than or equal to children's values.
+
+![Heap](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Min-heap.png/240px-Min-heap.png)
+
+- Binary Search Tree: parent's values are larger than all values in the left subtree but smaller than those in the right subtree.
+
+![BST](https://www.tutorialspoint.com/data_structures_algorithms/images/binary_search_tree.jpg)
+
 ### Balanced Binary Search Tree
+
+Balanced binary search trees, either height- or weight- balanced, are analogous to geometry similarity, search trees could be thought of as quadrilaterals, while red black and AVL (Russian, abbr.) are rectangulars and perfectly balanced search trees are squares. It always come with the cost: nicer features lead to higher maintenance cost, i.e. more complicated to maintain the structure / invariants (red-black invariants or 1-leveled depth difference in AVL).
 
 | Operation / Structure | BBST (red-black)    | BST     | Heap    | Hash Table | Some  |
 | --------------------- | ------- | ------- | ------- | ---------- | ---------- |
@@ -73,14 +84,6 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 | Insert         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
 | Delete         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
 
-**Heap vs Binary Search Tree**:
-- Heap: parent's values are always smaller than or equal to children's values.
-
-![Heap](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Min-heap.png/240px-Min-heap.png)
-
-- Binary Search Tree: parent's values are larger than all values in the left subtree but smaller than those in the right subtree.
-
-![BST](https://www.tutorialspoint.com/data_structures_algorithms/images/binary_search_tree.jpg)
 
 ![Imgur](http://i.imgur.com/y1zYnZm.png)
 
@@ -109,6 +112,19 @@ For large data (millions):
 
 - delete: AVL tree is faster on average, but in worst case RB tree is faster. because you also need to lookup for a very deep node to swap before removal (similar to the reason of insertion). on average both trees has constant number of rotation. but RB tree has a constant upper bound for rotation.
 
+### Hash Table
+
+Operations: O(1) complexity for the following operations
+
+- Insert
+- Delete
+- Lookup
+
+**Collisons** are prevalent and should be premptively addressed. There are 2 strategies:
+- Chaining: put collided hashed items into a linked list. h(x1) = h(x2) = k, bucket k contains [(x1, v1) -> (x2, v2) -> ...] where v1, v2, ... are sattelite values. Suitable for cramped items, i.e. number of items > number of buckets.
+- Open addressing: or probing. Apply sequentially a number of hash functions: h1(x) = k1 occupied? => h2(x) = k2 occupied? => ... Basically this method tries to find an unoccupied bucket for the collided hashed values, **not applicable to cramped items, only where number of items << number of buckets.
+
+![Imgur](http://i.imgur.com/8TCHlNu.png)
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.
@@ -533,6 +549,13 @@ Advanced and further readings:
 - [Euclidean Method](https://en.wikipedia.org/wiki/Euclidean_algorithm)
 - [Binary GCD Algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm)
 - [Prime Factorization](https://en.wikipedia.org/wiki/Integer_factorization)
+
+## Birthday Paradox
+
+Given a group of 23 persons, there is a 50-50 chance that there is 2 persons having the same birthday. **A rule of thumb is that the 50-50 chance comes when we have the size of the population reaches squared root of the event universe `23 ~ sqrt(365)`**.
+
+Another interesting fact is that if we relaxing the condition of exact same birthday to **within a week**, the chance comes significantly earlier at `sqrt(365/7) ~ 8`. It happens that only a group of 8 friends is very likely to celebrate a joint birthday party of 2 guys / gals.
+
 
 ## Resources:
 

@@ -121,10 +121,25 @@ Operations: O(1) complexity for the following operations
 - Lookup
 
 **Collisons** are prevalent and should be premptively addressed. There are 2 strategies:
-- Chaining: put collided hashed items into a linked list. h(x1) = h(x2) = k, bucket k contains [(x1, v1) -> (x2, v2) -> ...] where v1, v2, ... are sattelite values. Suitable for cramped items, i.e. number of items > number of buckets.
-- Open addressing: or probing. Apply sequentially a number of hash functions: h1(x) = k1 occupied? => h2(x) = k2 occupied? => ... Basically this method tries to find an unoccupied bucket for the collided hashed values, **not applicable to cramped items, only where number of items << number of buckets.
+- Chaining: put collided hashed items into a linked list. h(k1) = h(k2) = x, bucket x contains [(k1, v1) -> (k2, v2) -> ...] where v1, v2, ... are sattelite values. Suitable for cramped items, i.e. number of items > number of buckets.
+- Open addressing: or probing. Apply sequentially a number of hash functions: h1(k) = x1 occupied? => h2(k) = x2 occupied? => ... Basically this method tries to find an unoccupied bucket for the collided hashed values, **not applicable to cramped items, only where number of items << number of buckets.
+- Pathodological datasets: fixed a hashing function h(k) (no matter how clever it is) there always exist a dataset underwhich the hash function will perform as bad as the most miserable hash function. This is due to the compression step (from a big universe to a small set) during the hashing process. Which exactly gave rise to the class of universal hashing functions
+- Universal hashing functions: randomly selected any function h(k) belongs to the universal class H, the probability of a colission of 2 random keys x and y **is as good as a random function, which is 1/n**.
+	+ Universal hash functions (UHF) with chaning hash tables **guarantees** that all operations (insert/delete/lookup) are O(1)
+	+ UHF with open addressing: guarantees the insertion time of 1/(1-α)
+	+ UHF with linear probing: insertion time is 1/(1-α)<sup>2</sup>
 
-![Imgur](http://i.imgur.com/8TCHlNu.png)
+**A good hash table has**:
+- Controlled load factor (number of items / number of buckets)
+- Good hash function which in turn depends on:
+	+ Golden standard: simple uniform hashing, every key is likely equal to hash to any of the bucket.
+	+ In case of the multiplication / division hashing methods, the divisor or multiplier should be the closest prime number to the number of buckets to avoid biases.
+	+ Qualitative: easy to store, easy to evaluate
+	+ **More art than science**!
+
+Randomized >< Deterministic
+
+![Imgur](http://i.imgur.com/i8tPQBH.png)
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

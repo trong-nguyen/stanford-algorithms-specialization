@@ -73,16 +73,16 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 
 Balanced binary search trees, either height- or weight- balanced, are analogous to geometry similarity, search trees could be thought of as quadrilaterals, while red black and AVL (Russian, abbr.) are rectangulars and perfectly balanced search trees are squares. It always come with the cost: nicer features lead to higher maintenance cost, i.e. more complicated to maintain the structure / invariants (red-black invariants or 1-leveled depth difference in AVL).
 
-| Operation / Structure | BBST (red-black)    | BST     | Heap    | Hash Table | Some  |
-| --------------------- | ------- | ------- | ------- | ---------- | ---------- |
-| Search         		| O(logn) | O(logn) |         | O(1) 	   |            |
-| Select         		| O(logn) | O(1) 	| O(n)    | O(n) 	   |            |
-| Min / Max         	| O(logn) | O(1) 	| O(1)    |            |            |
-| Pred / Succ         	| O(logn) | O(1) 	|         |   	 	   |            |
-| Rank         			| O(logn) | O(logn) |         |   	 	   |            |
-| Output in sorted order| O(n) 	  | O(n) 	|         |   	 	   |            |
-| Insert         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
-| Delete         		| O(logn) | O(n) 	| O(logn) | O(1) 	   |            |
+| Operation / Structure | BBST (red-black)    | BST     | Heap    | Hash Table | Bloom Filter |
+| --------------------- | ------------------- | ------- | ------- | ---------- | ---------- |
+| Search         		| O(logn)             | O(logn) |         | O(1) 	   | O(1)       |
+| Select         		| O(logn)             | O(1) 	| O(n)    | O(n) 	   |            |
+| Min / Max         	| O(logn)             | O(1) 	| O(1)    |            |            |
+| Pred / Succ         	| O(logn)             | O(1) 	|         |   	 	   |            |
+| Rank         			| O(logn)             | O(logn) |         |   	 	   |            |
+| Output in sorted order| O(n) 	              | O(n) 	|         |   	 	   |            |
+| Insert         		| O(logn)             | O(n) 	| O(logn) | O(1) 	   | O(1)       |
+| Delete         		| O(logn)             | O(n) 	| O(logn) | O(1) 	   |            |
 
 
 ![Imgur](http://i.imgur.com/y1zYnZm.png)
@@ -136,10 +136,70 @@ Operations: O(1) complexity for the following operations
 	+ In case of the multiplication / division hashing methods, the divisor or multiplier should be the closest prime number to the number of buckets to avoid biases.
 	+ Qualitative: easy to store, easy to evaluate
 	+ **More art than science**!
+	+ Randomized >< Deterministic
 
-Randomized >< Deterministic
 
 ![Imgur](http://i.imgur.com/i8tPQBH.png)
+
+### Bloom Filter
+
+Complexity: O(1) for insert and lookup, no deletion, comes with false positive probability (report an item inserted when it was not).
+
+Formulae:
+- False positive probability ~ (1-e<sup>-k/b</sup>)<sup>k</sup>
+- Optimal number of hash functions k = ln2 x b = 0.693b
+- False positive probability given optimal k: (1/2)<sup>(ln2)b</sup>
+
+**Bloom Filter vs Hash Table**:
+
+Pros: more space efficient
+Cons: can't store associated data, no deletions, suffering from a small false positive probability.
+
+![Imgur](http://i.imgur.com/Ebyrqh5.png)
+
+## SUM-2 Problem - A clever application of binary search and hash table
+Problem: given an array A of size n, find all item pair that sum up to a given value t.
+
+Hash table solution: 
+- Save all items in the array to a hash table: O(n)
+- For each item x, look up the value y = t - x: n operations each of O(1) -> O(n).  
+Complexity: O(n)
+
+Binary search solution:
+- Sort the array: O(nlogn)
+- For each item x, search for the value y = t - x: n operations each of O(logn) -> O(nlogn).  
+Complexity: O(nlogn)
+
+**Advanced problem**: same as the original SUM-2 but now we need to find all item pair that sum up to one of the value in a range of value t[low:high] of size m.
+
+Analogously, the hash table solution is O(n*m) and the binary search solution O(mnlogn).
+
+However a tweak on the binary search solution gives surprisingly good performance compared to the hash table.
+
+Modified binary search solution, [code here](sum2.py):
+- Sort the array: O(nlogn)
+- For each item x, locate the range in A that contains the admissible y where (x+y) falls in [t<sub>low</sub> ... t<sub>high</sub>] as follow:
+	+ we need t<sub>low</sub> < x + y < t<sub>high</sub>, hence t<sub>low</sub> - x < y < t<sub>high</sub> - x
+	+ Let's call this range [i:j], which contain items y<sub>i</sub> ... y<sub>j</sub> where y<sub>k</sub> = A<sub>k</sub>. This step takes 2logn (thanks to the binary search) operations per item x.
+	+ We can add x to y[i...j] to obtain t[i...j], the corresponding values y for x. Statistically, let's assume t[i...j] has average length of c.
+	+ Collectively, the whole step is O(nlogn).
+- From step 2, we obtain a list of T<sub>0</sub>, T<sub>1</sub>, .... T<sub>n-1</sub>, where each T is a subset of T<sup>*</sup>=[t<sub>low</sub> ... t<sub>high</sub>]. The cost to count distinct values t<sub>i</sub> of all T<sub>i</sub> is O(nclog(nc)) ~ O(nclog(n)) since `c <= m = O(n)` hence `O(log(nc))` = `O(log(n))`, where c is the average lenght of the admissible sublists. The cost might be reduced O(nc) if we use a hash table for marking the t<sub>i</sub> that was summed up by any found (x,y) pair.
+
+All in all it takes: O(nlogn) for sorting, O(nlogn) for finding admissible range, and O(nclog(n)). Total complexity: **O(nclogn)**.
+
+Hence, the decision of using hash table or binary search structures boils down to the relative magnitude of `m/logn` and `c`. When the admissible arrays are sparse, meaning there are few item pairs that sum up to the interested values, c is small compared to m and logn is relatively small also which might lead to a much faster performance when using binary search. Practically, the hash table solution is inferior until c approaches the value of `m/log(n)`
+
+For example: in Prof. Roughgarden's assignment, n = 1 million, m is 20000, logn ~ 20. Theoretically, binary search is better before c reaches `m/logn` ~ 1000. In the scope of this paticular problem, c was found to be less than 10 and hence the binary search is 2 orders faster than hash tables. It literally translates to seconds versus hours performance.
+
+The takeaway is, again, we should by all mean exploit the boundary conditions. In this case, instead of paying the whole price of m lookups for each item, it is possible to narrow down to `c` lookups (and pay a premium of `logn` to combine/eliminate duplicates), which is much much better!
+
+'''python
+There are 427 summable values in range (-10000, 10000)
+There are 4274 summable values in range (-100000, 100000)
+There are 42760 summable values in range (-1000000, 1000000)
+There are 427657 summable values in range (-10000000, 10000000)
+[Finished in 138.6s]
+'''
 
 ## Knapsack Problem - Dynamic Programming
 Complexity: O(nW) where n is the number of items and W is the weight constraint on knapped items.

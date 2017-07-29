@@ -59,7 +59,7 @@ def test_assignment():
 	There are 42760 summable values in range (-1000000, 1000000)
 	There are 427657 summable values in range (-10000000, 10000000)
 	'''
-	
+
 	array = read_array('problems/2sum.txt')
 	#inclusive
 	rans = [

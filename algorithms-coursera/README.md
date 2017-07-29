@@ -419,6 +419,37 @@ References:
 
 ![Imgur](http://i.imgur.com/m6WMtO9.png)
 
+## Bellman - Ford shortest path finding - Dynamic Programming
+
+Complexity: O(mn), applicable to graph with negative edges, but non-negative cycles. Distributed in nature, suitable for clustered computing.
+
+Algorithm: take a budget-based point of view that given increasing number of hops `i` allowed, find shortest path from a source `s` to a destination `t`. The fact that the shortest path in a n vertices graph the shortest path is at most `n-1` length guarantees that the maximum number of hops we need to traverse from the source is capped at `n-1`. Basically we check all the paths from s to t and choose the shortest one, by brute-force. The local substructure optimality of the problem in which **the shortest path to t must either: of length (i-1) plus an edge through one of the predecessors of t (hence total length `i`) or already reach t at length (i-1)** suggests the use of dynamic programming. Notice the similarity to **Max-weight independent set** when we either choose A<sub>i-1</sub> or A<sub>i-2</sub> + w<sub>i</sub>. In fact this algorithm of Bellman-Ford relates to all of the previous dynamic programming problems, since it advances by looking and choosing between previous calculated values plus new results.
+
+The whole algorithm is:
+- Create a 2 dimensional array A<sub>i,v</sub> (where i is the current length allowed and v the iterating vertice) and init it with A<sub>i=0,v=s</sub> = 0.
+- From i=0 to n-1, iterate over all v in the graph, compute A<sub>i,v</sub> = min(A<sub>inherited</sub>, A<sub>propagated</sub>) where:
+	+ A<sub>inherited</sub> = A<sub>i-1,v</sub>
+	+ A<sub>propagated</sub> = min(A<sub>i-1,w</sub> + c<sub>wv</sub>) of all predecessors w of v where c is the lenght from w to v
+- The process terminates when `i = n-1` or A<sub>i,v</sub> = A<sub>i-1,v</sub> for every v (early stop, basically the values are stagnant)
+
+Examples:
+
+![Imgur](http://i.imgur.com/L7cotkT.jpg)  
+*Values propagation*
+
+![Imgur](http://i.imgur.com/deJ6Hlu.gif)  
+*With shortest path illustrated. Notice the A values (yellow filled circles) are initially infinite (except source) and gradually propagated downstream. The green highlighted path denotes the current shortest path found.*
+
+Variations:
+- Source - centric vs destination - centric: starting from source / destination and working towards destination / source.
+- Pull update vs push update: in-progress vertices asking for values vs. updated vertex pushing values and ask neighbors to update route accordingly
+
+Problems:
+- "Counting to infinity": problems involve asynchrocy (autonomous computation), circular connections (one has 2 way-ed connection to another) and push-updating. 
+- Fix to the "counting to infinity": path vector protocol: each node saves the entire path from itself to the destination, this is essentially the reconstruction problem.
+
+Application: Internet routing
+
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure
 
@@ -624,6 +655,10 @@ Advanced and further readings:
 - [Euclidean Method](https://en.wikipedia.org/wiki/Euclidean_algorithm)
 - [Binary GCD Algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm)
 - [Prime Factorization](https://en.wikipedia.org/wiki/Integer_factorization)
+
+## Probability and Statistics
+
+Probability, in a nutshell, is more about prediction. In contrast, statistics is more into conclusion. It is important to know the difference, mainly due to the purpose that they are meant to serve, to better approach them. But it is equally important to understand the duo's organic relation. One (**probability**) is used to predict and the other (**statistics**) is to suggest what we should predict or correct what we predicted.
 
 ## Birthday Paradox
 

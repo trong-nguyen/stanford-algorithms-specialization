@@ -432,6 +432,8 @@ The whole algorithm is:
 	+ A<sub>propagated</sub> = min(A<sub>i-1,w</sub> + c<sub>wv</sub>) of all predecessors w of v where c is the lenght from w to v
 - The process terminates when `i = n-1` or A<sub>i,v</sub> = A<sub>i-1,v</sub> for every v (early stop, basically the values are stagnant)
 
+The entire process is somewhat BFS-ish, advancing layers by layers, with extra work cost of `m` due to min evaluation among all calculated paths.
+
 Examples:
 
 ![Imgur](http://i.imgur.com/L7cotkT.jpg)  
@@ -626,6 +628,18 @@ So far so good, right? We still have to check the closest pair with one point in
 7. We aim to get the closestSplitPair in linear time, and I think this is the key to answer your question. How many points will we have at S? We don't know. In fact S could have as many points as P! To solve it in linear time we cannot afford to compare each possible pair. This would take O(n2) time. What can we do? We can compare each point of S only with other points with an y coordinate difference of at most δ. But to do so we need S sorted by y coordinate. We could filter Px based in point 6 limitations and sort S by y coordinate, but this would take O(nlog(n)) time, not linear. However, there is a trick we can do to have the points in S sorted by y coordinate in linear time. And this is the main reason we created Px and Py in the first place. We can just run through Py and if the current point satisfies the limitations of point 6, we store that point in S. This way we get the points sorted by y coordinate in linear time!
 
 8. Even this way, we cannot assure that there will be several points in S that falls in the same y,y+δ range. Or can we? In fact, we can. Given that δ was the closest pair of points in the same side of x¯, we are sure that there will be no points at the same half closer than δ. Therefore if we draw the know δ∗2δ rectangle, we can easily prove that at most we will have 8 points inside the rectangle. Therefore we will only need to compare each point in S with the next 7 points ordered by y coordinate. In fact we can prove that there will be needed just 5 comparisons, although the prove is not as easy. Feel free to investigate about that.
+
+## Bulk Problems
+
+This group of problems regards to problems solved in multiple paradigms (divide & conquer, dynamic programming, greedy) and by many techniques but in common can be reduced to a simple, often has known solution, problem. For example:
+
+- SUM-2 problem for a wide range of target values instead of a single value
+- Select k-th smallest items from an array, originated from the smallest item problem
+- K-clustering by Hamming distance
+- All pair shortest path (Floyd-Warshall).
+
+Often we exploit the fact that they are all in the same set of data and hence the labor for a single problem might be reused to speedup others (shortest path). Or we can make use of the boundary conditions and narrow down the size of each single problem (SUM-2, k-clustering, k-th smallest).
+
 
 ## GCD and LCM, a.k.a Greatest Common Divisor and Least Common Multiplier
 

@@ -452,6 +452,23 @@ Problems:
 
 Application: Internet routing
 
+## Floy-Warshall All Pair Shortest Path Finding - Dynamic Programming
+Problem: find the shortest path between all pairs in a graph with negative edges.
+
+Complexity: O(n<sup>3</sup>).
+
+Algorithm: the solution is actually quite simple. The key is figure out the common works and utilize that work in the actual computation process. There are 2 aspects to understand the algorithm:
+- The mechanism: there is a metaphor to easier understand the rationale by asking this question: **to find the shortest path from i-j, I would ask every node k in the graph: what is the cost from you (`k`) to `j`, then I would choose the `min{cost(i,k) + cost(k,j)} for k:0-n-1`.** Repeat that question for all possible (i,j) then you have the Floy-Warshall algorithm.
+- The dynamics: or the propagation direction of shortest path finding. 
+	+ In the initialization `k=0` only pairs `(i,j)` that have a direct connection (i.e. `e(i,j) ∈ E`, E is the edge set) have shortest path values or A<sub>i,j</sub>≠∞ where i≠j.
+	+ In the next iteration where k = 1, the upstream edge in a group of 2 consecutive edges will be updated and so on. At k = n - 1, all the upstream / parent nodes of all vertices have been explored / asked for shortcuts to all other vertices.
+	+ The shortest path values between any pair if at any time k is updated then immediately that value will be used at the next iteration `k+1`. This ensures the final result is independent from vertex ordering.
+- To detect negative cost cycles, look for negative values on the diagonal A[i=j].
+
+![Imgur](http://i.imgur.com/ETaM2z2.png)
+
+![Imgur](http://i.imgur.com/ssdT0ke.png)
+
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure
 

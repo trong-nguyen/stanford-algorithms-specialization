@@ -467,7 +467,7 @@ Algorithm: the solution is actually quite simple. The key is figure out the comm
 
 ![Imgur](http://i.imgur.com/ETaM2z2.png)
 
-![Imgur](http://i.imgur.com/ssdT0ke.png)
+![Imgur](http://i.imgur.com/P3XkHCu.png)
 
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure

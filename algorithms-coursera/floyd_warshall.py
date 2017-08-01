@@ -1,5 +1,4 @@
-types = {}
-BIG_INT = 100000
+import sys
 
 def unit_init(a, graph):
 	for ak in a:
@@ -16,7 +15,7 @@ def unit_relax(A, i, j, k):
 def standard_init(a, graph):
 	for ak in a:
 		for i in range(len(ak)):
-			ak[i] = [BIG_INT] * len(ak[i])
+			ak[i] = [sys.maxint] * len(ak[i])
 
 	for t, d in graph.items():
 		for h, v in d.items(): 
@@ -27,10 +26,10 @@ def standard_relax(A, i, j, k):
 	return min(A[k-1][i][j], A[k-1][i][k-1] + A[k-1][k-1][j])
 
 
-def floy_warshall(graph, init, relax):
+def floy_warshall(graph, init=standard_init, relax=standard_relax):
 
 	n = len(graph)
-	A = [[[BIG_INT for j in range(n)] for i in range(n)] for k in range(n+1)]
+	A = [[[sys.maxint for j in range(n)] for i in range(n)] for k in range(n+1)]
 	init(A, graph)
 
 	print '\nk=0'
@@ -57,13 +56,13 @@ def test_basic():
 		3: {1: -1}
 	}
 
-	A = floy_warshall(graph, standard_init, standard_relax)
+	A = floy_warshall(graph)
 
 	print '\nk=n'
 	print_a(A[-1])
 
 	assert A[-1] == [[0, -1, -2, 0], [4, 0, 2, 4], [5, 1, 0, 2], [3, -1, 1, 0]]
-	print 'passed basic tests!'
+	print 'Passed all basic tests!'
 
 def test_unit_graph():
 	graph = {
@@ -98,7 +97,7 @@ def test_strongly_connected_graph():
 	print '\nk=n'
 	print_a(A[-1])
 
-
-test_basic()
-# test_unit_graph()
-# test_strongly_connected_graph()
+if __name__ == '__main__':
+	test_basic()
+	# test_unit_graph()
+	# test_strongly_connected_graph()

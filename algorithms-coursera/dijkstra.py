@@ -1,9 +1,14 @@
+import sys
 import heapq
 
 def dijkstra(graph, source):
-	inf = 1000000
-	S = {k: inf for k in graph}
+	inf = sys.maxint
+	vertices = list(set([k for v in graph.values() for k in v] + graph.keys()))
+	S = {v: inf for v in vertices}
 	S[source] = 0
+
+	if source not in graph:
+		return S
 
 	def done(node):
 		return S[node] < inf
@@ -19,9 +24,10 @@ def dijkstra(graph, source):
 
 		S[node] = score
 		count += 1
-		for v in graph[node]:
-			if not done(v):
-				heapq.heappush(H, (score + graph[node][v], v))
+		if node in graph:
+			for v in graph[node]:
+				if not done(v):
+					heapq.heappush(H, (score + graph[node][v], v))
 
 	return S
 
@@ -58,5 +64,6 @@ def test_assignments():
 	# print distances
 	print ','.join(map(str, [distances[i] for i in interested]))
 
-test_basic()
-test_assignments()
+if __name__ == '__main__':
+	test_basic()
+	test_assignments()

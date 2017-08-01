@@ -417,7 +417,7 @@ References:
 - [Dijkstra's algorithm on Wikipedia](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 - [Applications](http://www.csl.mtu.edu/cs2321/www/newLectures/30_More_Dijkstra.htm)
 
-![Imgur](http://i.imgur.com/m6WMtO9.png)
+![Imgur](http://i.imgur.com/f4M9f2F.png)
 
 ## Bellman - Ford shortest path finding - Dynamic Programming
 
@@ -476,12 +476,21 @@ Algorithm: the solution is actually quite simple. The key is figure out the comm
 
 ## Johnson's All Pair Shortest Path
 
-Complexity: O(nmlogn), same as Dijkstra's algorithm for n pairs but with Bellman-Ford benefit: can be used with negative edge lengths.
+Complexity: O(nmlogn), same as Dijkstra's algorithm for n pairs but with Bellman-Ford benefits: can be used with negative edge lengths and can detect negative cost cycles early in O(nm) time.
 
 Idea: combine 2 algorithms and 1 technique
 - Potential reweighting: the weights depend on start and end vertices only (potential). The technique hence can be used as a transform operation: from Dijkstra's problem to Bellmand-Ford's.
 - Bellman-Ford's algorithm: to calculate the path-independent weights
 - Dijkstra's algorithm: to actual find the shortest paths, invoked n times.
+
+Algorithm:
+- Create a new graph with all nodes grounded to a ground node, i.e. a new ground node that has one way connections to all the other nodes is created. This is analogous to bounding a potential function in physics or electricity. A clever way to eliminate the negative weights.
+- Use Bellman-Ford to find single source shortest path from `ground` to all the other nodes. Call this `P(v)` where v the vertices. If negative cost cycles are detected we stop the algorithm here.
+- Reweight all the edges as c'<sub>uv</sub> = c<sub>uv</sub> + P(u) - P(v) where c'<sub>uv</sub>  is the new weight of the edge (u,v) with u as the tail.
+- Invoke n Dijkstra operations on the new reweighted graph where edge lengths now all become non-negative.
+- Convert the shortest path values found back to the unweighted version c<sub>uv</sub> = c'<sub>uv</sub> - P(u) + P(v).
+
+![Imgur](http://i.imgur.com/yNdyuMn.jpg)
 
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure

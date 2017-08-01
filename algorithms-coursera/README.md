@@ -461,13 +461,27 @@ Algorithm: the solution is actually quite simple. The key is figure out the comm
 - The mechanism: there is a metaphor to easier understand the rationale by asking this question: **to find the shortest path from i-j, I would ask every node k in the graph: what is the cost from you (`k`) to `j`, then I would choose the `min{cost(i,k) + cost(k,j)} for k:0-n-1`.** Repeat that question for all possible (i,j) then you have the Floy-Warshall algorithm.
 - The dynamics: or the propagation direction of shortest path finding. 
 	+ In the initialization `k=0` only pairs `(i,j)` that have a direct connection (i.e. `e(i,j) ∈ E`, E is the edge set) have shortest path values or A<sub>i,j</sub>≠∞ where i≠j.
-	+ In the next iteration where k = 1, the upstream edge in a group of 2 consecutive edges will be updated and so on. At k = n - 1, all the upstream / parent nodes of all vertices have been explored / asked for shortcuts to all other vertices.
-	+ The shortest path values between any pair if at any time k is updated then immediately that value will be used at the next iteration `k+1`. This ensures the final result is independent from vertex ordering.
+	+ In the next iteration where k = 1, we asked all nodes to check whether there is a shorter path via node with label 1 (or the first label) to all other nodes. Similarly at k-ith iterration we ask nodes to check the shortcuts via k-th node.
+	+ At k = n, we ask all nodes to check shortcuts via the node with label n-th, and hence we already ask nodes to check shortcuts via all other nodes from k=1...n.
+	+ Formula: A<sub>i,j,k</sub> = min {A<sub>i,j,k-1</sub>, A<sub>i,k,k-1</sub> + A<sub>k,j,k-1</sub>}
+	+ Initial condition: A<sub>i,j,k=0</sub>:
+		- `= 0` if `i == j`
+		- = c<sub>ij</sub> if there is an edge (i,j)
+		- `= ∞` otherwise
 - To detect negative cost cycles, look for negative values on the diagonal A[i=j].
 
-![Imgur](http://i.imgur.com/ETaM2z2.png)
+![Imgur](http://i.imgur.com/ELDafpM.png)
 
-![Imgur](http://i.imgur.com/P3XkHCu.png)
+![Imgur](http://i.imgur.com/imkcz1B.png)
+
+## Johnson's All Pair Shortest Path
+
+Complexity: O(nmlogn), same as Dijkstra's algorithm for n pairs but with Bellman-Ford benefit: can be used with negative edge lengths.
+
+Idea: combine 2 algorithms and 1 technique
+- Potential reweighting: the weights depend on start and end vertices only (potential). The technique hence can be used as a transform operation: from Dijkstra's problem to Bellmand-Ford's.
+- Bellman-Ford's algorithm: to calculate the path-independent weights
+- Dijkstra's algorithm: to actual find the shortest paths, invoked n times.
 
 ## Kruskal's Algorithm for Minimum Spanning Tree Problem
 Complexity: **O(mlogn)** using Union-Find data structure

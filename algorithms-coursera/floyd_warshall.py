@@ -99,6 +99,6 @@ def test_strongly_connected_graph():
 	print_a(A[-1])
 
 
-# test_basic()
+test_basic()
 # test_unit_graph()
-test_strongly_connected_graph()
+# test_strongly_connected_graph()

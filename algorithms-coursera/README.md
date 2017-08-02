@@ -10,7 +10,7 @@ Published: 2012
 
 I was at level 1. Now 1.5. Pushing myself to level 2.
 
-# Algorithm Design Analysis
+# Algorithm Design And Analysis
 Algorithms use one or more of the following methods:
 - Divide and conquer  
 Sorting algorithms (merge, quick)
@@ -39,6 +39,43 @@ Similar to divide and conquer, the original problem can be divided into subprobl
 Algorithms that use greedy method differ from those using dynamic programming in the following ways:
 - In dynamic programming, the solution to a problem depends on the solution to its subproblem. While in greedy method, the solution only depends on the information local to that paticular subproblem. This results in the following consequence.
 - Dynamic programming uses bottom-up approach, greedy method uses top-down.
+
+## NP vs P - Super High Level Thinking About Decision Algorithms
+
+[Good Reference Articles (3 Parts)](https://cs.stackexchange.com/a/9566)
+
+**P**: polynomial time **SOLVABLE** problems
+
+**NP**: Non-deterministic Polynomial time problems, polynomial time **VERIFIABLE** problems. 
+Facts:
+- P is a subset (or identical set) of NP.
+- All NP problems can be solved by brute-force search in exponential time.
+
+The definition of NP problems can be expressed in input - output definition:
+- Input size is expressible in polynomial terms.
+- Solutions / certificates can be verified in polynomial time.
+
+**NP-complete**: Hardest NP problems. All NP-complete problems are at least as hard as any NP problem.
+
+A recipe for solving an NP-complete problem X:
+- Find a known NP-complete problem A
+- Prove that X reduces to A which implies:
+	+ A at least as hard as X
+	+ A is an NP-complete problem
+
+**NP-hard**: Hardest problems of all, not solvable nor verifiable in polynomial time.
+
+Right now there are 3 potential answers to the NP vs P question. Note that P ⊆ NP [(proof)](https://stackoverflow.com/a/2639634):
+- NP = P (and so is NP-complete)
+- NP ≠ P (and hence P ⊂ NP)
+- NP is not = nor ≠ P (since the question is wrong)
+
+Super-roughly speaking in set theory language: **P ≤ NP ≤ NP-complete < NP-hard**. 
+
+![](http://slideplayer.com/677302/1/images/6/NP+P+NP-hard+NP-complete.jpg)
+
+
+
 
 ## Data Structures
 ### Heap
@@ -720,6 +757,15 @@ Given a group of 23 persons, there is a 50-50 chance that there is 2 persons hav
 
 Another interesting fact is that if we relaxing the condition of exact same birthday to **within a week**, the chance comes significantly earlier at `sqrt(365/7) ~ 8`. It happens that only a group of 8 friends is very likely to celebrate a joint birthday party of 2 guys / gals.
 
+## Bag-Of-Tricks Problems:
+
+### Finding a missing number in a unique and continous range with time O(n) and space O(1)
+
+Finding 2 missing numbers  
+Finding 3  
+Finding k in O(n) and O(k) space
+
+[Reference](https://stackoverflow.com/q/3492302)
 
 ## Resources:
 

@@ -55,13 +55,21 @@ The definition of NP problems can be expressed in input - output definition:
 - Input size is expressible in polynomial terms.
 - Solutions / certificates can be verified in polynomial time.
 
-**NP-complete**: Hardest NP problems. All NP-complete problems are at least as hard as any NP problem.
+**NP-complete**: a subset of NP problems that contain the hardest ones within it. All NP-complete problems are at least as hard as any NP problem.
 
 A recipe for solving an NP-complete problem X:
 - Find a known NP-complete problem A
 - Prove that X reduces to A which implies:
 	+ A at least as hard as X
 	+ A is an NP-complete problem
+
+A more practical recipe:
+1. Try to solve special cases (tractable) of the problem. For ex. in the case of vertex cover:
+	+ Solve the problem for trees instead of generic graphs
+	+ Solve for bipartite
+	+ Solve when the solution is small, like logn, (so that we can guess since the pool is small / brute-force is feasible)
+2. Apply heuristic conditions (use approximations): min-cut.
+3. Find a better solution which is `poly < solution < brute-force`
 
 **NP-hard**: Hardest problems of all, not solvable nor verifiable in polynomial time.
 
@@ -74,6 +82,14 @@ Super-roughly speaking in set theory language: **P ≤ NP ≤ NP-complete < NP-h
 
 ![](http://slideplayer.com/677302/1/images/6/NP+P+NP-hard+NP-complete.jpg)
 
+The fact that an NP-complete problem is **at least** as hard as any NP problem suggests that once we can solve a single problem of NP-complete category in polynomial time, we can achieve polynomial time solutions for all NP problems. That is why trying to solve an NP-complete problem in polynomial time (or prove that it is impossible) is of tremendous interest in computer science. It will open (or close for good) the door for algorithm research (if we can solve our problem efficiently, you can solve yours for sure since it was proven that the upper bound of difficulty is the same). It is like once we beat the boss, other monsters are just at most as difficult.
+
+Another fact is that over the last decades, despite intensive research of all kinds of algorithm, none was found for NP-complete problem that is polynomial-time. This doesnot neccessarily confirm the non-existence of such efficient algorithms, but somehow tips the scale towards the NP ≠ P, making it the more probable answer! (there are polls among researchers that increasingly favor the NP ≠ P)
+
+### Takeaway - the point of studying / categorizing problems based on NP-difficulty is:
+#### - To realize whether a problem is NP
+#### - Be realistic and not to expect polynomial time solutions and aim to something though not as good as polynomial but not quite bad as brute-force solutions (could be 2<sup>n</sup>, `n!`).
+#### - To be intellectually and mentally prepared when designing algorithms since you already know there is potentially a wall / roadblock / bottleneck and expect a detour (probably longer than polynomial).
 
 
 
@@ -757,13 +773,14 @@ Given a group of 23 persons, there is a 50-50 chance that there is 2 persons hav
 
 Another interesting fact is that if we relaxing the condition of exact same birthday to **within a week**, the chance comes significantly earlier at `sqrt(365/7) ~ 8`. It happens that only a group of 8 friends is very likely to celebrate a joint birthday party of 2 guys / gals.
 
-## Bag-Of-Tricks Problems:
+# Bag-Of-Tricks Problems:
 
-### Finding a missing number in a unique and continous range with time O(n) and space O(1)
+## Finding missing numbers 
 
-Finding 2 missing numbers  
-Finding 3  
-Finding k in O(n) and O(k) space
+- Finding a missiung number in a unique and continous range with time O(n) and space O(1)  
+- Finding 2 missing numbers  
+- Finding 3  
+- Finding k in O(n) and O(k) space
 
 [Reference](https://stackoverflow.com/q/3492302)
 

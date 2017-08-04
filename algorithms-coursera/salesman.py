@@ -37,7 +37,9 @@ def all_pair_distances(points):
 	return [[compute_distance(u, v) for v in points] for u in points]
 
 def print_tour(tour, points):
-	S22 = [0, 5, 9, 11, 14, 18, 17, 21, 22, 20, 16, 19, 23, 15, 13, 12, 8, 6, 2, 3, 7, 4, 0]
+	"""
+	just a hack for easy copying to Excel columns
+	"""
 	print '\n'.join([str(points[i][0]) for i in tour])
 	print '\n'
 	print '\n'.join([str(points[i][1]) for i in tour])
@@ -56,7 +58,7 @@ def postprocess(points, A, D):
 	print tour
 	print_tour(tour, points)
 
-	tour_length = compute_path_length(tour, points) # sum([compute_distance(points[i], points[j]) for i, j in zip(tour[:-1], tour[1:])])
+	tour_length = compute_path_length(tour, points)
 	return tour_length
 
 def salesman(points):
@@ -89,6 +91,12 @@ def read_output(f):
 	return float(open(f, 'r').read())
 
 def pertube(points, solution, pertubed_nodes):
+	"""
+	Approximate the TSP problem by greedy method
+	solution is the solution to the reduced TSP problem
+	pertubed_nodes is the dict that saves which nodes were excluded and to 
+	which nodes they are related to (in the same cluster)
+	"""
 	def avoid_head(idx):
 		return -1 if idx == 0 else idx
 	
@@ -113,12 +121,11 @@ def pertube(points, solution, pertubed_nodes):
 
 def test_assignment():
 	points = read_points('problems/tsp.txt')
-	# print_tour(points)
 
-	# reduced_set = [1, 10, 24]
-	# reduced_neighbors = [0, 9, 23]
-	# points = [p for i,p in enumerate(points) if i not in reduced_set]
-	# tsp = salesman(points)
+	reduced_set = [1, 10, 24]
+	reduced_neighbors = [0, 9, 23]
+	points = [p for i,p in enumerate(points) if i not in reduced_set]
+	tsp = salesman(points)
 
 	# tsp = salesman(points)
 
@@ -142,6 +149,6 @@ def test():
 		assert abs(result - expected) < 1e-2, 'Failed ' + message
 		print 'Passed ' + message
 
-
-test_assignment()
-test()
+if __name__ == '__main__':
+	test()
+	test_assignment()

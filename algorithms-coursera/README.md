@@ -722,6 +722,64 @@ So far so good, right? We still have to check the closest pair with one point in
 
 8. Even this way, we cannot assure that there will be several points in S that falls in the same y,y+δ range. Or can we? In fact, we can. Given that δ was the closest pair of points in the same side of x¯, we are sure that there will be no points at the same half closer than δ. Therefore if we draw the know δ∗2δ rectangle, we can easily prove that at most we will have 8 points inside the rectangle. Therefore we will only need to compare each point in S with the next 7 points ordered by y coordinate. In fact we can prove that there will be needed just 5 comparisons, although the prove is not as easy. Feel free to investigate about that.
 
+## Travelling Salesman Problem - NP-Hard - Dynamic Programming
+
+![](http://i2.wp.com/www.rational-action.com/wp-content/uploads/2015/03/best-road-trip-major-landmarks-1024x548-1024x548.png?resize=625%2C334)
+
+![](https://imgs.xkcd.com/comics/travelling_salesman_problem.png)
+
+Problem: given a graph with n vertices, find a tour that visits each vertice exactly once and have minimum length.
+
+Complexity: NP-hard for generic instances, NP-complete for Euclidean graphs. O(n<sup>2</sup>2<sup>n</sup>) with Dynamic Programming.
+
+Algorithm: applying Dynamic Programming, following the same method in Bellman-Ford with additional constraints:
+- Every path must visit exactly n nodes (the budget i is now fixed at n-1)
+- The visited nodes are all distinct
+
+Optimal substructure: if the first and last node to visit is i and j, respectively, then before j the path should come from one of the neighbor nodes k with minimum cost and has visited all nodes except j, that is:  
+
+L<sub>S,j</sub> = min(L<sub>S-{j},k</sub> + c<sub>kj</sub>) for k ∈ S-{j}, k terms to consider
+
+where S is the set with all nodes and `S-{j}` the set with all nodes except j, L<sub>X,j</sub> is the shortest path visiting all nodes in X and ending at j.  
+Similarly, it would be that before k:
+
+L<sub>S-{j},k</sub> = min(L<sub>S-{j,k},m</sub> + c<sub>mk</sub>) for m ∈ S-{j,k}, m terms to consider
+
+Right before base case, there are n subproblems (q ∈ S):
+
+L<sub>{i,q},q</sub> = c<sub>iq</sub>, 1 term to consider 
+
+At base case:
+
+L<sub>{i},i</sub> = 0
+
+So, in order to have L<sub>S,j</sub> we have to solve a factorial number of subproblems from n-1 down to 1. That is when Dynamic Programming comes to the rescue, at each level of subproblem of size s we donot need to solve the full spectrum thanks to the tabular lookup. There would be ∑(S) of possible subsets of size from 1 to n (think (n choose 1) + (n choose 2) + ... + (n choose n)) = 2<sup>n</sup>. For each set there is a O(n) choice of j (the end vertice) and O(n) amount of works (the min operation). That would be total of O(n<sup>2</sup> 2<sup>n</sup>).
+
+[Code](salesman.py):
+
+- Create a 2D array of A[S][j] where S holds the subset and j the endpoint in that subset.
+- Init A<sub>S={0},0</sub> = 0 others ∞.
+- For size m of the subset from 1 to n
+	+ For all the possible sets with size m
+		* For each possible endpoint j (in the current set of size m):
+			+ Look at all possible point k prior to j and choose the min distance A[S-{j}][k] + d[k][j]:
+				- `A[S-{j}][j] = min(A[S-{j,k}][k] + D[k][j])`
+
+Practical results: the constant in O(n<sup>2</sup> 2<sup>n</sup>) appears to be 1.15 in this case (or might include the n<sup>2</sup> term)
+
+| Number of nodes | Time (in minutes) |
+| --------------- | ----------------- |
+| 17              | 0.3               |
+| 18              | 0.6               |
+| 19              | 1.4               |
+| 20              | 3.2               |
+| 21              | 7.3               |
+| 22              | 18.2              |
+| ...             | ...               |
+| 25              | 221.2 (inter't)   |
+
+![Imgur](http://i.imgur.com/vImmTz2.png)
+
 ## Bulk Problems
 
 This group of problems regards to problems solved in multiple paradigms (divide & conquer, dynamic programming, greedy) and by many techniques but in common can be reduced to a simple, often has known solution, problem. For example:

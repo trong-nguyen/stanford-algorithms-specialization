@@ -29,34 +29,35 @@ def bar(S, x):
 def compute_distance(u, v):
 	return sqrt((v[0] - u[0]) ** 2 + (v[1] - u[1]) ** 2)
 
+
+def compute_path_length(path, points):
+	return sum([compute_distance(points[i], points[j]) for i, j in zip(path[:-1], path[1:])])
+
 def all_pair_distances(points):
 	return [[compute_distance(u, v) for v in points] for u in points]
 
 def print_tour(tour, points):
-	# tour = [0, 1, 5, 4, 3, 7, 6, 8, 12, 11, 2, 9, 10, 13, 16, 17, 19, 18, 15, 14]
-	S23 = [0, 1, 5, 4, 3, 7, 6, 8, 12, 11, 2, 9, 10, 13, 16, 17, 18, 21, 22, 20, 19, 14, 15, 0]
-	S22 = [0, 4, 3, 2, 6, 5, 7, 10, 9, 1, 8, 11, 14, 15, 16, 19, 20, 18, 17, 12, 13, 21, 0]
+	S22 = [0, 5, 9, 11, 14, 18, 17, 21, 22, 20, 16, 19, 23, 15, 13, 12, 8, 6, 2, 3, 7, 4, 0]
 	print '\n'.join([str(points[i][0]) for i in tour])
 	print '\n'
 	print '\n'.join([str(points[i][1]) for i in tour])
 
-def preprocess(points, A):
+def postprocess(points, A, D):
 	n = len(points)
 	S = list(range(n))
 	tour = [0]
 	while True:
-		k = np.argmin(A[encode(S)]) # + D[k][0]
-		tour.insert(0, k)
-		if k == 0 or len(tour) > n:
+		code = encode(S)
+		j = np.argmin([A[code][k] + D[k][tour[0]] for k in range(len(A[code]))])
+		tour.insert(0, j)
+		if j == 0 or len(tour) > n:
 			break
-		S = bar(S, k)
+		S = bar(S, j)
 	print tour
 	print_tour(tour, points)
 
-	tour_length = sum([compute_distance(points[i], points[j]) for i, j in zip(tour[:-1], tour[1:])])
+	tour_length = compute_path_length(tour, points) # sum([compute_distance(points[i], points[j]) for i, j in zip(tour[:-1], tour[1:])])
 	return tour_length
-
-	
 
 def salesman(points):
 	D = all_pair_distances(points)
@@ -72,8 +73,7 @@ def salesman(points):
 				NS = bar(S, j)
 				A[encode(S)][j] = min([A[encode(NS)][k] + D[k][j] for k in NS])
 
-
-	return preprocess(points, A)
+	return postprocess(points, A, D)
 
 def test_basic():
 	pass
@@ -88,14 +88,47 @@ def read_points(f):
 def read_output(f):
 	return float(open(f, 'r').read())
 
+def pertube(points, solution, pertubed_nodes):
+	def avoid_head(idx):
+		return -1 if idx == 0 else idx
+	
+	new_solution = list(solution)
+	for node, per_node in pertubed_nodes.items():
+		idx = new_solution.index(node)
+
+		insert_before_path = list(new_solution)
+		insert_before_path.insert(avoid_head(idx), per_node)
+		pre = compute_path_length(insert_before_path, points)
+
+		insert_after_path = list(new_solution)
+		insert_after_path.insert(idx+1, per_node)
+		post = compute_path_length(insert_after_path, points)
+
+		insert_position = avoid_head(idx if pre <= post else idx + 1)
+
+		new_solution.insert(insert_position, per_node)
+
+	return new_solution
+
+
 def test_assignment():
 	points = read_points('problems/tsp.txt')
 	# print_tour(points)
 
-	reduced_set = [1, 10, 24]
-	reduced_neighbors = [0, 9, 23]
-	points = [p for i,p in enumerate(points) if i not in reduced_set]
-	tsp = salesman(points)
+	# reduced_set = [1, 10, 24]
+	# reduced_neighbors = [0, 9, 23]
+	# points = [p for i,p in enumerate(points) if i not in reduced_set]
+	# tsp = salesman(points)
+
+	# tsp = salesman(points)
+
+	def tsp_with_pertubed_clusters():
+		pertubed_nodes = {0: 1, 9: 10, 23: 24}
+		solution = [0, 5, 9, 11, 14, 18, 17, 21, 22, 20, 16, 19, 23, 15, 13, 12, 8, 6, 2, 3, 7, 4, 0] # solved solution
+		new_solution = pertube(points, solution, pertubed_nodes)
+		print new_solution
+		print 'Approximated path length of TSP problem: {}'.format(compute_path_length(new_solution, points))
+		print_tour(new_solution, points)
 
 def test():
 	for tc in ['1', '2', '3']:
@@ -111,4 +144,4 @@ def test():
 
 
 test_assignment()
-# test()
+test()

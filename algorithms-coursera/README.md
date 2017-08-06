@@ -730,7 +730,7 @@ So far so good, right? We still have to check the closest pair with one point in
 
 Problem: given a graph with n vertices, find a tour that visits each vertice exactly once and have minimum length.
 
-Complexity: NP-hard for generic instances, NP-complete for Euclidean graphs. O(n<sup>2</sup>2<sup>n</sup>) with Dynamic Programming.
+Complexity: NP-hard for generic optimization instances, NP-complete for decision problems. O(n<sup>2</sup>2<sup>n</sup>) with Dynamic Programming for Euclidean graphs.
 
 Algorithm: applying Dynamic Programming, following the same method in Bellman-Ford with additional constraints:
 - Every path must visit exactly n nodes (the budget i is now fixed at n-1)
@@ -779,6 +779,17 @@ Practical results: the constant in O(n<sup>2</sup> 2<sup>n</sup>) appears to be 
 | 25              | 221.2 (inter't)   |
 
 ![Imgur](http://i.imgur.com/vImmTz2.png)
+
+## Vertex Cover
+Problem: given a graph G find a minimum set S of vertices such that for every edge (u,v) in G there is at least one vertex (either u or v) that is contained in S.
+
+Complexity: O(n2<sup>k</sup>) where k is the size of the cover set (given k is small).
+
+Theorem: if S, the vertex cover of a graph G, has size k then the size of the vertex cover of graph G<sub>u</sub> (with u deleted from G) would be k - 1.
+
+## Knapsack Problem - NP-Hard - Dynamic Programming
+
+Complexity: NP-Hard for optimization problems, NP-Complete for decision problems. Greedy heuristic O(n<sup>2</sup>v<sub>max</sub>)
 
 ## Bulk Problems
 

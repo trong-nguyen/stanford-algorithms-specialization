@@ -787,6 +787,12 @@ Complexity: O(n2<sup>k</sup>) where k is the size of the cover set (given k is s
 
 Theorem: if S, the vertex cover of a graph G, has size k then the size of the vertex cover of graph G<sub>u</sub> (with u deleted from G) would be k - 1.
 
+Algorithm: piggy-backed on the theorem, starting at k (either given or guessed) we recursively on graph G:
+- arbitrarily select an edge whose vertices are u and v and check if:
+	1. whether G<sub>u</sub> has a vertex cover size of k - 1 by deleting u from G
+ 	1. or whether G<sub>v</sub> has a vertex cover size of k - 1 by deleting v from G
+- if neither of the obove is correct than we conclude that the assumption of the size of the vertex cover being k was wrong and G can only has at most a vertex cover of size k - 1 (since if it is k then it must have a vertex cover size of k-1 if we delete a vertex u (or v) which was proven to be wrong)
+
 ## Knapsack Problem - NP-Hard - Dynamic Programming
 
 Complexity: NP-Hard for optimization problems, NP-Complete for decision problems. Greedy heuristic O(n<sup>2</sup>v<sub>max</sub>)

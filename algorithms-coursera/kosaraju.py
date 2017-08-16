@@ -129,6 +129,7 @@ def test_assignment(graph_file='./scc.txt', dump_backup=False, do_assertion=True
 	graph = read_graph(graph_file)
 
 	scc = kosaraju(graph)
+	print 'scc', scc
 	scc = [(s[0], len(s[1])) for s in scc]
 	scc = sorted(scc, key=lambda tp: tp[1], reverse=True)
 	# scc = sorted(scc, key=lambda tp: len(tp[1]), reverse=True)
@@ -148,6 +149,7 @@ def test_assignment(graph_file='./scc.txt', dump_backup=False, do_assertion=True
 		
 		print 'Passed test case [{}] with flying colors'.format(graph_file)
 
-# test_assignment(graph_file='./scc.txt', dump_backup=True, do_assertion=False)
-for tc in range(1, 6+1):
-	test_assignment(graph_file='tests/course2/assignment1StronglyConnectedComponent/input_scc_{}.txt'.format(tc))
+if __name__ == '__main__':
+	# test_assignment(graph_file='./scc.txt', dump_backup=True, do_assertion=False)
+	for tc in range(1, 6+1):
+		test_assignment(graph_file='tests/course2/assignment1StronglyConnectedComponent/input_scc_{}.txt'.format(tc))

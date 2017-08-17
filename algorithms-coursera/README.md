@@ -797,6 +797,23 @@ Algorithm: piggy-backed on the theorem, starting at k (either given or guessed) 
 
 Complexity: NP-Hard for optimization problems, NP-Complete for decision problems. Greedy heuristic O(n<sup>2</sup>v<sub>max</sub>)
 
+## 2SAT Problem
+
+Complexity: O(Strongly-connected-component) unlike the NP-complete of 3SAT problem.
+
+Problem: check whether a set of m clauses C<sub>1</sub> ∩ C<sub>2</sub> ... C<sub>m</sub> where C<sub>i</sub> = (a<sub>j</sub> v a<sub>k</sub>) of n variables a<sub>1</sub>, a<sub>2</sub> ... a<sub>n</sub> is satisfiable, meaning there exists a set of boolean values a<sub>1</sub>, a<sub>2</sub> ... a<sub>n</sub> satisfies the m clauses.
+
+Algorithm:
+1. Papadimitriou randomized local search algorithm
+	- Analysis by random walk
+2. Convert clauses to implication graph and use Kosaraju's strongly connected component searching.
+	- An x ∪ y clause translates to an edge from (-x, y) and (-y, x) in the implication graph.
+	- The 2SAT instance is satisfiable if no x and -x pair is present in any strongly connected component in the implication graph.
+	- The implication is that if there is a 2 way path from x to -x, it implies a contradiction since an assumed boolean value of x leads to a required boolean value -x, and that is unsatisfiable.
+![](https://i.stack.imgur.com/5NuFl.png)  
+[Example](https://cs.stackexchange.com/questions/16311/drawing-an-implication-graph-for-2-sat-clauses?rq=1) where an unsatisfiable 2SAT instance translates to a graph with a single strongly connected component.
+3. Back tracking
+
 ## Bulk Problems
 
 This group of problems regards to problems solved in multiple paradigms (divide & conquer, dynamic programming, greedy) and by many techniques but in common can be reduced to a simple, often has known solution, problem. For example:

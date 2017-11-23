@@ -1,8 +1,12 @@
-# Algorithms Specialization - Coursera
-School: Coursera  
-Class: Algorithms Divide and Conquer  
-Lecturer: Tim Roughgarden - Professor at Stanford University  
-Published: 2012  
+# Algorithms Specialization, Stanford - Coursera courses
+
+This repo houses all of the projects that I extensively studied, completed and documented for the Stanford - Coursera Specialization on algorithms by Prof. Tim Roughgarden. The curriculum is substantial and provides a great deal of information from essential techniques such as efficient sorting, to fundamental data structures, to graph theory, divide and conquer, dynamic programming, and even an overview of difficult np-complete / np-hard problems. The whole specialization, which comprises 4 courses and took me 3 months, solidified my computer science knowledge. The courses really pushed me hard, but I feel acomplished and enlightened on the day of completion.
+
+
+School: Coursera
+Class: Algorithms Divide and Conquer
+Lecturer: Tim Roughgarden - Professor at Stanford University
+Published: 2012
 
 # Who are you?
 
@@ -12,21 +16,21 @@ I was at level 1. Now 1.5. Pushing myself to level 2.
 
 # Algorithm Design And Analysis
 Algorithms use one or more of the following methods:
-- Divide and conquer  
+- Divide and conquer
 Sorting algorithms (merge, quick)
-- Randomized algorithms  
+- Randomized algorithms
 Quick sort
 - Dynamic programming: the solutions to subproblems are mostly similar, hence can be reused to tremendously speedup computation. The term dynamic programming is closer to data tabulation than to programming due to a historial reason.
 	+ Max-weight independent set (textbook problem)
 	+ Fractional knapsack problem
-- Greedy method: relies on the **local** optimal subtructure property of the problem.  
+- Greedy method: relies on the **local** optimal subtructure property of the problem.
 	+ Dijkstras's method
 	+ Activity selection
 	+ Huffman encoding algorithm
 	+ 0-1 (binary) Knapsack problem
 
 ### Dynamic programming ingredients:
-1) the problems can be divided into finite sub-problems. 
+1) the problems can be divided into finite sub-problems.
 2) the solution to the upper-problem depends on the solutions to the sub-problems in a simple expression (think max, min, add ...)
 3) the original solution is the so
 lution to the subproblem of the biggest size within the boundary (space) of the original problem.
@@ -46,7 +50,7 @@ Algorithms that use greedy method differ from those using dynamic programming in
 
 **P**: polynomial time **SOLVABLE** problems
 
-**NP**: Non-deterministic Polynomial time problems, polynomial time **VERIFIABLE** problems. 
+**NP**: Non-deterministic Polynomial time problems, polynomial time **VERIFIABLE** problems.
 Facts:
 - P is a subset (or identical set) of NP.
 - All NP problems can be solved by brute-force search in exponential time.
@@ -78,7 +82,7 @@ Right now there are 3 potential answers to the NP vs P question. Note that P ⊆
 - NP ≠ P (and hence P ⊂ NP)
 - NP is not = nor ≠ P (since the question is wrong)
 
-Super-roughly speaking in set theory language: **P ≤ NP ≤ NP-complete < NP-hard**. 
+Super-roughly speaking in set theory language: **P ≤ NP ≤ NP-complete < NP-hard**.
 
 ![](http://slideplayer.com/677302/1/images/6/NP+P+NP-hard+NP-complete.jpg)
 
@@ -213,14 +217,14 @@ Cons: can't store associated data, no deletions, suffering from a small false po
 ## SUM-2 Problem - A clever application of binary search and hash table
 Problem: given an array A of size n, find all item pair that sum up to a given value t.
 
-Hash table solution: 
+Hash table solution:
 - Save all items in the array to a hash table: O(n)
-- For each item x, look up the value y = t - x: n operations each of O(1) -> O(n).  
+- For each item x, look up the value y = t - x: n operations each of O(1) -> O(n).
 Complexity: O(n)
 
 Binary search solution:
 - Sort the array: O(nlogn)
-- For each item x, search for the value y = t - x: n operations each of O(logn) -> O(nlogn).  
+- For each item x, search for the value y = t - x: n operations each of O(logn) -> O(nlogn).
 Complexity: O(nlogn)
 
 **Advanced problem**: same as the original SUM-2 but now we need to find all item pair that sum up to one of the value in a range of value t[low:high] of size m.
@@ -267,7 +271,7 @@ Utilizing the local optimal substructure that an item i-th is either belonging t
 
 **Algorithm**: [code](./knapsack.py)
 
-Bottom up approach with iterations:  
+Bottom up approach with iterations:
 Finding optimal values step: form a 2D-array with n columns representing the selection of item i-th and W rows representing the optimal values selected at weight limit w<sub>j</sub>.
 - Fill zeros into colum 0, implying there is no value could be knapped with 0 item selected.
 - At column i and weight j, the optimal value is a) either inherited from column [i-1, <sub>j</sub>] meaning the optimal value when item i not considered is still optimal when it is, OR b) the sum of the value v<sub>i</sub> and the prior optimal value of the sub problem [i-1, W-w<sub>i</sub>], depending on which one has the larger value.
@@ -313,7 +317,7 @@ Retrieval step:
 p1 = penalty(x[i], y[j]) + A[i-1][j-1]
 p2 = gap_penalty + A[i-1][j]
 p3 = gap_penalty + A[i][j-1]
-if: 
+if:
 	A[i][j] == p1: # no_gap_inserted, characters i and j might match or not
 		i -= 1, j -= 1
 	A[i][j] == p2: # gap_inserted_in_y
@@ -355,7 +359,7 @@ Matching pattern costs [32/44] penalty, () and _ mean mismatched and gap inserti
 From there, we can modify the innermost loop such that instead of scanning the cost of all possible subtrees having root from i to j, we only look at optimal roots ranges from the root of the sub trees [i,j-1] and [i+1, j], i.e. the subtrees obtained by peeling off one element on the left and right, respectively. This optimization requires maintaning a separate array of the optimal root index R where R<sub>i,j</sub> coressponds to the optimal root index of the sub problem [i:j].
 
 
-**Tree Retrieval**: to retrieve the actual search tree, we use array R. 
+**Tree Retrieval**: to retrieve the actual search tree, we use array R.
 - The root node r1 is obtained from R[1,n], which translates to the optimal problem of size [1:n] or our original problem.
 - From there we can deduce the left branch root left_root = R[1,r1-1] and right right_root = R[r1+1,n] only if the respective left/right subproblem is not empty.
 - Recursively we then could obtain the entire tree.
@@ -430,7 +434,7 @@ Foundation:
 - Prim's algorithm guarantees to output a spanning tree (not neccessarily minimum): this in turn relies on:
 	+ Empty cut property (zero cut <-> disconnected): guarantees the algorithm continues untill all vertices are included.
 	+ Double-crossing cut property: assure no cycle produced since Prim's algorithm advances 1 edge at the time, and that edge has no loop back (thanks to the removal step after inclusion).
-- **Cut Property**: if there exists a cut (A, B) of graph G and e is the cheapst crossing edge between A and B **THEN** e belongs to a MST (the MST if all costs are distinct) of G. 
+- **Cut Property**: if there exists a cut (A, B) of graph G and e is the cheapst crossing edge between A and B **THEN** e belongs to a MST (the MST if all costs are distinct) of G.
 
 Algorithm: proceeding somehow similar to Dijkstra's algorithm:
 
@@ -453,7 +457,7 @@ while len(MST) != len(G) and heap:
 	u = old_node(edge) # the endpoint already in MST
 	v = new_node(edge) # the one that is not
 
-	MST[u][v] = MST[v][u] = cost 
+	MST[u][v] = MST[v][u] = cost
 
 	for neighbor, cost in G[v] if neighbor not in MST:
 		edge = (v, neighbor)
@@ -466,7 +470,7 @@ Analysis: the iteration is at most m size since it does not visit any edge more 
 
 ## Dijkstra - Shortest path finding
 
-References: 
+References:
 - [Dijkstra's algorithm on Wikipedia](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 - [Applications](http://www.csl.mtu.edu/cs2321/www/newLectures/30_More_Dijkstra.htm)
 
@@ -489,10 +493,10 @@ The entire process is somewhat BFS-ish, advancing layers by layers, with extra w
 
 Examples:
 
-![Imgur](http://i.imgur.com/L7cotkT.jpg)  
+![Imgur](http://i.imgur.com/L7cotkT.jpg)
 *Values propagation*
 
-![Imgur](http://i.imgur.com/deJ6Hlu.gif)  
+![Imgur](http://i.imgur.com/deJ6Hlu.gif)
 *With shortest path illustrated. Notice the A values (yellow filled circles) are initially infinite (except source) and gradually propagated downstream. The green highlighted path denotes the current shortest path found.*
 
 Variations:
@@ -500,7 +504,7 @@ Variations:
 - Pull update vs push update: in-progress vertices asking for values vs. updated vertex pushing values and ask neighbors to update route accordingly
 
 Problems:
-- "Counting to infinity": problems involve asynchrocy (autonomous computation), circular connections (one has 2 way-ed connection to another) and push-updating. 
+- "Counting to infinity": problems involve asynchrocy (autonomous computation), circular connections (one has 2 way-ed connection to another) and push-updating.
 - Fix to the "counting to infinity": path vector protocol: each node saves the entire path from itself to the destination, this is essentially the reconstruction problem.
 
 Application: Internet routing
@@ -512,7 +516,7 @@ Complexity: O(n<sup>3</sup>).
 
 Algorithm: the solution is actually quite simple. The key is figure out the common works and utilize that work in the actual computation process. There are 2 aspects to understand the algorithm:
 - The mechanism: there is a metaphor to easier understand the rationale by asking this question: **to find the shortest path from i-j, I would ask every node k in the graph: what is the cost from you (`k`) to `j`, then I would choose the `min{cost(i,k) + cost(k,j)} for k:0-n-1`.** Repeat that question for all possible (i,j) then you have the Floy-Warshall algorithm.
-- The dynamics: or the propagation direction of shortest path finding. 
+- The dynamics: or the propagation direction of shortest path finding.
 	+ In the initialization `k=0` only pairs `(i,j)` that have a direct connection (i.e. `e(i,j) ∈ E`, E is the edge set) have shortest path values or A<sub>i,j</sub>≠∞ where i≠j.
 	+ In the next iteration where k = 1, we asked all nodes to check whether there is a shorter path via node with label 1 (or the first label) to all other nodes. Similarly at k-ith iterration we ask nodes to check the shortcuts via k-th node.
 	+ At k = n, we ask all nodes to check shortcuts via the node with label n-th, and hence we already ask nodes to check shortcuts via all other nodes from k=1...n.
@@ -552,11 +556,11 @@ Complexity: **O(mlogn)** using Union-Find data structure
 
 Note: Asymptotically, O(mlogm) is equivalent to O(mlogn) since at most m = n<sup>2</sup> hence at most logm = 2logn and thus O(logm) = O(logn).
 
-The idea: Sorting edges based on their costs. From the lowest to highest cost edges, keep adding the edge to the MST if it does not make a cycle when added. Pictorially, the algorithm forms multiple disconnected components (initially size n, meaning n disconnected components each contains a single vertex) and fuses them together when iterating over. The key point to the algorithm is in efficiently checking cyclic edges. To determine if an edge creates a cycle we need to be sure that it is not belong to the same component. The Union-Find datastructure makes it possible to efficiently check this property in constant time O(1) and O(logn) to maintain which all together contributes to O(mlogn) complexity. On the note of maintenance cost, there is a technique for updating leader nodes of the smaller size component, thus the size of the fused component keeps increasing of atleast 2 folds. Hence at most a logarithmic number of updates are needed to update the leader node. 
+The idea: Sorting edges based on their costs. From the lowest to highest cost edges, keep adding the edge to the MST if it does not make a cycle when added. Pictorially, the algorithm forms multiple disconnected components (initially size n, meaning n disconnected components each contains a single vertex) and fuses them together when iterating over. The key point to the algorithm is in efficiently checking cyclic edges. To determine if an edge creates a cycle we need to be sure that it is not belong to the same component. The Union-Find datastructure makes it possible to efficiently check this property in constant time O(1) and O(logn) to maintain which all together contributes to O(mlogn) complexity. On the note of maintenance cost, there is a technique for updating leader nodes of the smaller size component, thus the size of the fused component keeps increasing of atleast 2 folds. Hence at most a logarithmic number of updates are needed to update the leader node.
 
 ![Imgur](http://i.imgur.com/Q7n1UxE.png)
 
-Advanced:  
+Advanced:
 - Theoreticall, it was proven (Pettie, Ramachandran, Chazelle) that the fastest algorithm possible for the MST problem is somewhere between linear and O(m) O(m α(n)) where α is the inverse Ackerman function, an extremely slow growing function, slower than log*n (log of log of log...).
 - Randomized algorithm (Karger - Klein - Tarjan, 1995) can achieve O(m) efficiency. Of all the possible spanning trees find the one with the lowest cost.
 - Union-Find datastructure. Lazy union. Path-compression technique. Union by rank (choose the smaller size component to update).
@@ -569,15 +573,15 @@ In machine learning, the k-clustering technique is used in unsupervised learning
 
 Hamming distance: number of differences in corresponding i-th features of two sample points.
 
-**Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 20 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)). 
+**Advanced problem** ([code here](k_cluster_big.py)): do the k-clustering on a dataset of 200000 points by Hamming distance measure to find maximum k at which min spacing is of a given value. There is a total of approx. 20 billions pairs to be considered (every point to every other points). Sorting O(mlogm) is almost impossible for m of this value. The trick is then to analyze the problem further. For small values of min-spacing (for 24 bits points, there is (24-1) points with 1 bit diffrence from a given point, 276 points with 2 bits difference. Hence, with a requirement of min-spacing not smaller than 3, there is a finite number of variations (23 + 276) we need to check and unite if necessary, which brings the complexity of O(n) for this approach. The constant values in complexity depend on the min-spacing requirement. For small min-spacing(s) and big dataset this solution is quite efficient compared to quadratic complexity of generic greedy methods O(mlogn) ([sample code here](k_cluster.py)).
 
 **The takeaway here is even for seemingly over-complicated problems, careful analysis of boundary conditions or problem definition space, there might exist approaches that are able to exploit the boundary conditions and significantly reduce the hardness level.**
 
 ## Topological Sorting
 
-Complexity: O(m+n)  
-Dependency: Depth-First-Search  
-Terms to note: DAG - Directed acyclic (mean no cycles) graph  
+Complexity: O(m+n)
+Dependency: Depth-First-Search
+Terms to note: DAG - Directed acyclic (mean no cycles) graph
 
 Algorithm:
 - By recursion: Kahn's method. It relies on a not-so-straightforward "Find nodes that have no incoming edges" utility and recurses on the subgraph of the original graph with the said no-incoming nodes removed.
@@ -593,9 +597,9 @@ Application:
 
 ## Kosaraju's Strongly Connected Components Detection
 
-SCC: strongly connected component, a set of nodes in which we can travel from any node to any other node.  
-Complexity: O(m+n)  
-Dependency: Depth-First-Search  
+SCC: strongly connected component, a set of nodes in which we can travel from any node to any other node.
+Complexity: O(m+n)
+Dependency: Depth-First-Search
 
 Applications:
 - Analyze network weaknesses or structure
@@ -622,7 +626,7 @@ This algorithm really raises the role of randomization in algorithm design. The 
 
 The brute-force approach takes O(2<sup>n</sup>) by taking all possible combinations of any 2 sets. The Karger's algorithm suggests a better success probability of 1/n<sup>2</sup> by probability analysis, which translates into an O(n<sup>2</sup>mlogn) complexity in time algorithm by running the contraction algorithm n<sup>2</sup>logn times, each has complexity of O(m) (best known possible solution, others include O(mlogm) and O(n<sup>2</sup>)).
 
-In practice, the smallest cut can be obtained much earlier than the theoretical number n<sup>2</sup>logn. Probably due to the distribution of the result itself: if we run large enough number of iterations, good cut or even best cut can be encountered throughout the process, probably in the beginning. And we only need it once. Note that there is a relation between number of runs and expected success ratio: there is always a probability, though low, to find the smallest cut in the initial runs. The catch is: we may not be aware that is the smallest cut, how can we anyway. 
+In practice, the smallest cut can be obtained much earlier than the theoretical number n<sup>2</sup>logn. Probably due to the distribution of the result itself: if we run large enough number of iterations, good cut or even best cut can be encountered throughout the process, probably in the beginning. And we only need it once. Note that there is a relation between number of runs and expected success ratio: there is always a probability, though low, to find the smallest cut in the initial runs. The catch is: we may not be aware that is the smallest cut, how can we anyway.
 
 **In some simulations (running and count success cases so far, testing with graph size of 200 nodes and 50 nodes), I consistently found that the success ratio is around 2%, having smallest cut in only a few hundred repetitions. Cool! Randomization to the rescue, friends!**
 
@@ -641,7 +645,7 @@ Algorithm:
 ## Quick sort
 
 New presentation in Divide-And-Conquer fashion:
-- Divide: 
+- Divide:
 	* Choose pivot
 	* Do swapping, ensure that at the end of the swapping, the selected pivot value will stay in its rightful place in the desired, sorted array. This is the new insight!
 	* Pivoting process means that we do re-arrangement around the pivot value, not the pivot index. Hence the value selected as pivot will actually be moved around during the process.
@@ -658,7 +662,7 @@ New presentation in Divide-And-Conquer fashion:
 
 Complexity: O(n) with randomization.
 
-This algorithm is analogous to quicksort, in the way that it utilizes the partition process and only recurse on one of the sub-arrays, depending on the relation between the returned pivot index and **k**. It is efficient in the sense that given an array of arbitrary size, it takes only linear time to pick the k-th smallest or largest item in the array. Another application, it takes only O(n) to get the median value. 
+This algorithm is analogous to quicksort, in the way that it utilizes the partition process and only recurse on one of the sub-arrays, depending on the relation between the returned pivot index and **k**. It is efficient in the sense that given an array of arbitrary size, it takes only linear time to pick the k-th smallest or largest item in the array. Another application, it takes only O(n) to get the median value.
 
 How is it possible? Think about the fact that it eliminates the boiler plate steps and only focuses on the k fraction of the recursed arrays. It does not care about statistic order in each of the sub-arrays. Its interest is simple and efficient: after each recursion, a large number of unnecessary data is thrown away in the left or right sub-arrays, depending on their size.
 
@@ -736,18 +740,18 @@ Algorithm: applying Dynamic Programming, following the same method in Bellman-Fo
 - Every path must visit exactly n nodes (the budget i is now fixed at n-1)
 - The visited nodes are all distinct
 
-Optimal substructure: if the first and last node to visit is i and j, respectively, then before j the path should come from one of the neighbor nodes k with minimum cost and has visited all nodes except j, that is:  
+Optimal substructure: if the first and last node to visit is i and j, respectively, then before j the path should come from one of the neighbor nodes k with minimum cost and has visited all nodes except j, that is:
 
 L<sub>S,j</sub> = min(L<sub>S-{j},k</sub> + c<sub>kj</sub>) for k ∈ S-{j}, k terms to consider
 
-where S is the set with all nodes and `S-{j}` the set with all nodes except j, L<sub>X,j</sub> is the shortest path visiting all nodes in X and ending at j.  
+where S is the set with all nodes and `S-{j}` the set with all nodes except j, L<sub>X,j</sub> is the shortest path visiting all nodes in X and ending at j.
 Similarly, it would be that before k:
 
 L<sub>S-{j},k</sub> = min(L<sub>S-{j,k},m</sub> + c<sub>mk</sub>) for m ∈ S-{j,k}, m terms to consider
 
 Right before base case, there are n subproblems (q ∈ S):
 
-L<sub>{i,q},q</sub> = c<sub>iq</sub>, 1 term to consider 
+L<sub>{i,q},q</sub> = c<sub>iq</sub>, 1 term to consider
 
 At base case:
 
@@ -810,7 +814,7 @@ Algorithm:
 	- An x ∪ y clause translates to an edge from (-x, y) and (-y, x) in the implication graph.
 	- The 2SAT instance is satisfiable if no x and -x pair is present in any strongly connected component in the implication graph.
 	- The implication is that if there is a 2 way path from x to -x, it implies a contradiction since an assumed boolean value of x leads to a required boolean value -x, and that is unsatisfiable.
-![](https://i.stack.imgur.com/5NuFl.png)  
+![](https://i.stack.imgur.com/5NuFl.png)
 [Example](https://cs.stackexchange.com/questions/16311/drawing-an-implication-graph-for-2-sat-clauses?rq=1) where an unsatisfiable 2SAT instance translates to a graph with a single strongly connected component.
 3. Back tracking
 
@@ -834,7 +838,7 @@ The GCD and LCM relates by this formula: lcm(a, b) = a x b / gcd(a, b)
 
 The gcd can be found using different techniques, namely prime factorization, binary factorization. I chose Euclidean thanks to its simplicity. Asymtotically it does not differ a lot from the most efficient methods.
 
-Look at this simple algorithm!  
+Look at this simple algorithm!
 Complexity: O(logn) on average, O(h) in worst-case scenarios where h is the number of digits in the smaller number. Further [here](https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm).
 ```javascript
 gcd(a, b):
@@ -850,7 +854,7 @@ lcm(a, b):
 ```
 Recursively replacing the larger number with the difference. An improvement can be made by using the remainder in lieu of the difference.
 
-Advanced and further readings: 
+Advanced and further readings:
 - [Euclidean Method](https://en.wikipedia.org/wiki/Euclidean_algorithm)
 - [Binary GCD Algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm)
 - [Prime Factorization](https://en.wikipedia.org/wiki/Integer_factorization)
@@ -867,11 +871,11 @@ Another interesting fact is that if we relaxing the condition of exact same birt
 
 # Bag-Of-Tricks Problems:
 
-## Finding missing numbers 
+## Finding missing numbers
 
-- Finding a missiung number in a unique and continous range with time O(n) and space O(1)  
-- Finding 2 missing numbers  
-- Finding 3  
+- Finding a missiung number in a unique and continous range with time O(n) and space O(1)
+- Finding 2 missing numbers
+- Finding 3
 - Finding k in O(n) and O(k) space
 
 [Reference](https://stackoverflow.com/q/3492302)

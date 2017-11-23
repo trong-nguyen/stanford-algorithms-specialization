@@ -1,4 +1,0 @@
-py==1.4.32
-pytest==3.0.6
-pytest-benchmark==3.0.0
-statistics==1.0.3.5

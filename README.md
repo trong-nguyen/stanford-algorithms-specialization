@@ -130,6 +130,8 @@ Usecases: if we see problems involved sorting as static problems, i.e. we need a
 
 Balanced binary search trees, either height- or weight- balanced, are analogous to geometry similarity, search trees could be thought of as quadrilaterals, while red black and AVL (Russian, abbr.) are rectangulars and perfectly balanced search trees are squares. It always come with the cost: nicer features lead to higher maintenance cost, i.e. more complicated to maintain the structure / invariants (red-black invariants or 1-leveled depth difference in AVL).
 
+Rotations (left or right) are the means to balance trees. As rotations modify the heights of subtrees (one branch has height reduced and the other increased). However it is not trivial to balance tree using rotations. The rules that determines how the rotations should be carried out distingush the types of balanced trees. For example, coloring (no consecutive red nodes, same black heights) leads to red-black trees while signs (plus / minus rules) lead to AVL trees.
+
 | Operation / Structure | BBST (red-black)    | BST     | Heap    | Hash Table | Bloom Filter |
 | --------------------- | ------------------- | ------- | ------- | ---------- | ---------- |
 | Search         		| O(logn)             | O(logn) |         | O(1) 	   | O(1)       |
@@ -148,7 +150,7 @@ Balanced binary search trees, either height- or weight- balanced, are analogous 
 - The whole point is to have a balanced tree, i.e. trees that guarantee heights of O(logn) hence ensure efficient operations. There is no additional fancy thing about the red-black trees in terms of features. **They are just binary search tree with better performance**.
 - Insertions mostly will introduce red nodes, readjustments (to maintain the invariants) will introduce black ones. That is how the number of red and black nodes are roughly in the same order.
 - Every insertion operation includes 2 phases: positioning (standard binary search tree insertion, e.g. end-insertion, rotations, bubling up, etc.) and color coding (e.g. red coloring then readjusting)
-- Readjustment: insert the new node as red node and bubble up if invariants are violated (two red in a row). Might involve rotations to increase efficiency.
+- Readjustment: insert the new node as red node and bubble up if invariants are violated (two red in a row).
 
 ![](http://www.geeksforgeeks.org/wp-content/uploads/redBlackCase2.png)
 
